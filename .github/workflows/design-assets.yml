@@ -1,0 +1,103 @@
+name: Import approved design assets
+on:
+  push:
+    paths: ['.github/workflows/design-assets.yml']
+permissions:
+  contents: write
+  pages: write
+  id-token: write
+jobs:
+  import:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Prepare image tooling
+        run: python -m pip install --quiet pillow
+      - name: Import artwork
+        shell: python
+        run: |
+          import json, pathlib, urllib.request, concurrent.futures, io
+          from PIL import Image
+          root=pathlib.Path('public/assets'); root.mkdir(parents=True,exist_ok=True)
+          base='https://www.figma.com/api/mcp/asset/'
+          assets={
+            'hero.png':'b6a2b59b-bc72-42b8-8875-01d733d6b406.png',
+            'priority.png':'e563b1a0-0ff3-489d-8159-9c5fae31add4.png',
+            'footer.png':'8d77c901-3e82-40ad-b0d7-a8ebdc559391.png',
+            'shift-operations.png':'747bdac7-e247-463a-a821-433a5f9efe5a.png',
+            'shift-revenue.png':'933083dd-3e84-4102-80e9-8ece5f84d741.png',
+            'shift-compliance.png':'b0a859a8-9424-41a6-a3f0-59ff3fe9ef82.png',
+            'shift-trust.png':'1d5f4456-70a4-4222-8984-2c60fe142d89.png',
+            'why-background.png':'b142c749-faf3-4ce3-a667-b3335f28bb8e.png',
+            'why-90.png':'80e1deb6-9059-4dc9-89e0-f2cc60ce2458.png',
+            'cta.png':'0240f84a-4c1a-4f47-9a90-d3288f3bdb69.png',
+            'brand.svg':'b0f5efe0-44de-4bce-ad01-f218b8815bee.svg',
+            'icon-impact.svg':'36d8e222-3df0-4a3a-8d7d-bd889a4e017d.svg',
+            'icon-decisions.svg':'825e06b4-4942-4c75-bebe-692b4fc7f34d.svg',
+            'icon-functions.svg':'a3244be8-5326-4546-8191-f5348b273d0d.svg',
+            'icon-actions.svg':'caec835d-4d0d-4916-b6e2-b816ec8d9fe6.svg',
+            'icon-evidence.svg':'1beec844-1ec6-421e-bd3b-aa37b0da7781.svg',
+            'icon-protection.svg':'abae687c-9080-4c04-b5d4-7348290febd7.svg',
+            'icon-revenue.svg':'1176f2cd-e956-4436-87af-fc1439762248.svg',
+            'icon-marker.svg':'71b440b3-5c66-4bd3-8eb3-1af52a2f5dca.svg',
+            'icon-compliance.svg':'d635f14f-61bf-4fc7-bfa8-af37537f6fba.svg',
+            'icon-trust.svg':'3b942f07-3c9f-4ca5-b0a8-6a4bad445fff.svg'
+          }
+          def fetch(item):
+            name,asset=item
+            request=urllib.request.Request(base+asset,headers={'User-Agent':'Mozilla/5.0'})
+            try:
+              data=urllib.request.urlopen(request,timeout=90).read()
+              if name.endswith('.svg'):
+                (root/name).write_bytes(data)
+                return {'name':name,'bytes':len(data)}
+              image=Image.open(io.BytesIO(data)).convert('RGBA')
+              if max(image.size)>2200: image.thumbnail((2200,2200),Image.Resampling.LANCZOS)
+              output=root/(pathlib.Path(name).stem+'.webp')
+              image.save(output,'WEBP',quality=92,method=6)
+              if name=='hero.png':
+                image.thumbnail((1100,1100),Image.Resampling.LANCZOS)
+                image.save(root/'hero-mobile.webp','WEBP',quality=90,method=6)
+              return {'name':output.name,'bytes':output.stat().st_size,'width':image.width,'height':image.height}
+            except Exception as exc:
+              raise RuntimeError('Asset import failed: '+name+' ('+type(exc).__name__+')') from None
+          with concurrent.futures.ThreadPoolExecutor(max_workers=6) as pool:
+            manifest=list(pool.map(fetch,assets.items()))
+          (root/'manifest.json').write_text(json.dumps(manifest,indent=2))
+          print(json.dumps(manifest,indent=2))
+      - name: Record stable assets
+        run: |
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add public/assets
+          git diff --cached --quiet || git commit -m 'Vendor optimized approved artwork'
+          git push
+      - name: Inspect public brand typography
+        shell: python
+        continue-on-error: true
+        run: |
+          import urllib.request,re,urllib.parse,pathlib
+          url='https://esg.kaspersky.com/'
+          html=urllib.request.urlopen(url,timeout=30).read().decode()
+          csslinks=re.findall(r'(?:href|src)=[\"\']([^\"\']+\.css[^\"\']*)',html)
+          found=[]
+          for link in csslinks[:12]:
+            cssurl=urllib.parse.urljoin(url,link)
+            try:
+              css=urllib.request.urlopen(cssurl,timeout=30).read().decode()
+              for face in re.findall(r'@font-face\s*\{[^}]+\}',css):
+                face=re.sub(r'url\(([^)]+)\)',lambda m:'url('+urllib.parse.urljoin(cssurl,m.group(1).strip('"\''))+')',face)
+                found.append(face)
+            except Exception: pass
+          pathlib.Path('public/assets/font-reference.txt').write_text('\n'.join(found))
+          print('\n'.join(found)[:16000])
+      - uses: actions/upload-artifact@v4
+        with:
+          name: approved-assets
+          path: public/assets
+          retention-days: 3
+      - name: Check Pages enablement
+        uses: actions/configure-pages@v5
+        continue-on-error: true
+        with:
+          enablement: true
