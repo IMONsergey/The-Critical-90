@@ -5,16 +5,3 @@
 @font-face{font-family:"Kaspersky Sans Display";font-style:normal;font-weight:400;src:url("https://cdn.kaspersky.com/siterenderer/_next/static/media/KasperskySansDisplay-Regular.f94abc02.woff2") format("woff2"),url("https://cdn.kaspersky.com/siterenderer/_next/static/media/KasperskySansDisplay-Regular.01397096.woff") format("woff");font-display:swap;}
 @font-face{font-family:"Kaspersky Sans Display";font-style:normal;font-weight:500;src:url("https://cdn.kaspersky.com/siterenderer/_next/static/media/KasperskySansDisplay-Medium.1eb75ca3.woff2") format("woff2"),url("https://cdn.kaspersky.com/siterenderer/_next/static/media/KasperskySansDisplay-Medium.4ae05891.woff") format("woff");font-display:swap;}
 @font-face{font-family:"Kaspersky Sans Display";font-style:normal;font-weight:600;src:url("https://cdn.kaspersky.com/siterenderer/_next/static/media/KasperskySansDisplay-SemiBold.c4b7fb58.woff2") format("woff2"),url("https://cdn.kaspersky.com/siterenderer/_next/static/media/KasperskySansDisplay-SemiBold.4b3e5728.woff") format("woff");font-display:swap;}
-
-/* Metric-compatible fallback from Kaspersky's public web CSS. Keeps line wrapping stable if third-party font delivery is blocked. */
-@font-face{
-  font-family:"Kaspersky Sans Fallback";
-  src:local("Arial");
-  font-style:normal;
-  font-weight:300 800;
-  size-adjust:96.68%;
-  ascent-override:95.9868%;
-  descent-override:25.2379%;
-  line-gap-override:0%;
-}
-:root{font-family:"Kaspersky Sans Display","Kaspersky Sans Fallback",Arial,sans-serif;}
