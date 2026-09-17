@@ -1,0 +1,39 @@
+name: Check brand font delivery
+on:
+  push:
+    paths: ['.github/workflows/font-delivery-check.yml']
+permissions:
+  contents: read
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Inspect public font delivery and font names
+        shell: python
+        run: |
+          import urllib.request,json,re,urllib.parse
+          targets=['https://esg.kaspersky.com/','https://www.kaspersky.com/siterenderer/_next/static/media/KasperskySansDisplay-Regular.f94abc02.woff2','https://esg.kaspersky.com/_astro/fonts/404d0c05c5d5bf23.woff']
+          out=[]
+          for url in targets:
+            try:
+              req=urllib.request.Request(url,headers={'User-Agent':'Mozilla/5.0','Origin':'https://imonsergey.github.io'})
+              with urllib.request.urlopen(req,timeout=25) as response:
+                data=response.read(); headers=dict(response.headers)
+              result={'url':url,'headers':headers}
+              if url.endswith('/'):
+                html=data.decode(); result['font_faces']=re.findall(r'@font-face\s*\{[^}]+\}',html)
+                result['css_urls']=[urllib.parse.urljoin(url,m) for m in re.findall(r'(?:href|src)=[\"\']([^\"\']+\.css[^\"\']*)',html)]
+                for cssurl in result['css_urls'][:12]:
+                  try:
+                    css=urllib.request.urlopen(cssurl,timeout=20).read().decode()
+                    result['font_faces']+=re.findall(r'@font-face\s*\{[^}]+\}',css)
+                  except: pass
+              out.append(result)
+            except Exception as exc: out.append({'url':url,'error':str(exc)})
+          print(json.dumps(out,indent=2))
+          open('font-delivery.json','w').write(json.dumps(out,indent=2))
+      - uses: actions/upload-artifact@v4
+        with:
+          name: font-delivery
+          path: font-delivery.json
+          retention-days: 2
