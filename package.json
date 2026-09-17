@@ -1,0 +1,13 @@
+{
+  "name": "the-critical-90",
+  "private": true,
+  "version": "1.0.0",
+  "type": "module",
+  "description": "Kaspersky campaign landing page",
+  "scripts": {
+    "dev": "python3 -m http.server 4173 --directory public",
+    "build": "python3 scripts/build.py",
+    "check": "node --check public/app.js && node --check public/site-config.js",
+    "test": "python3 scripts/test_site.py"
+  }
+}
