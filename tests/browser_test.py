@@ -49,18 +49,49 @@ async def run():
                     await page.wait_for_timeout(45)
                 await page.evaluate('window.scrollTo({top:0,behavior:"instant"})')
                 await page.wait_for_timeout(1200)
-                layout = await page.evaluate('''() => ({
-                  viewport: innerWidth,
-                  scrollWidth: document.documentElement.scrollWidth,
-                  height: document.documentElement.scrollHeight,
-                  brokenImages: [...document.images].filter(i=>i.complete&&!i.naturalWidth).map(i=>i.getAttribute('src')),
-                  overflow: [...document.querySelectorAll('.container,.hero-copy,.feature-card,.shift-card,.consultation-form,.header-inner')]
-                    .filter(e=>{const r=e.getBoundingClientRect();return r.width&&(r.left < -.8 || r.right > innerWidth+.8)})
-                    .map(e=>({className:e.className,width:e.getBoundingClientRect().width})),
-                  fonts: [...document.fonts].filter(f=>f.family.includes('Kaspersky')).map(f=>({weight:f.weight,status:f.status}))
-                })''')
+                layout = await page.evaluate('''() => {
+                  const box = selector => {
+                    const element = document.querySelector(selector);
+                    if (!element) return null;
+                    const rect = element.getBoundingClientRect();
+                    return {
+                      x: Number(rect.x.toFixed(1)),
+                      y: Number((rect.y + scrollY).toFixed(1)),
+                      width: Number(rect.width.toFixed(1)),
+                      height: Number(rect.height.toFixed(1))
+                    };
+                  };
+                  return {
+                    viewport: innerWidth,
+                    clientWidth: document.documentElement.clientWidth,
+                    scrollWidth: document.documentElement.scrollWidth,
+                    height: document.documentElement.scrollHeight,
+                    geometry: {
+                      hero: box('.hero-stage'),
+                      heroCopy: box('.hero-copy'),
+                      heroArtwork: box('.hero-artwork'),
+                      priority: box('#priority'),
+                      shifts: box('#shifts'),
+                      why: box('.why-card'),
+                      guide: box('#guide'),
+                      featureGrid: box('.feature-grid'),
+                      framework: box('#agenda'),
+                      timeline: box('.timeline'),
+                      closing: box('.closing-card'),
+                      consultation: box('#consultation'),
+                      form: box('.consultation-form'),
+                      footer: box('.site-footer')
+                    },
+                    brokenImages: [...document.images].filter(i=>i.complete&&!i.naturalWidth).map(i=>i.getAttribute('src')),
+                    overflow: [...document.querySelectorAll('.container,.hero-copy,.feature-card,.shift-card,.consultation-form,.header-inner')]
+                      .filter(e=>{const r=e.getBoundingClientRect();return r.width&&(r.left < -.8 || r.right > innerWidth+.8)})
+                      .map(e=>({className:e.className,width:e.getBoundingClientRect().width})),
+                    fonts: [...document.fonts].filter(f=>f.family.includes('Kaspersky')).map(f=>({weight:f.weight,status:f.status}))
+                  };
+                }''')
                 report['layouts'].append(layout)
-                assert layout['scrollWidth'] <= width + 1, f'Horizontal overflow at {width}'
+                assert layout['clientWidth'] == width, f'Layout viewport lost width at {width}: {layout["clientWidth"]}'
+                assert layout['scrollWidth'] == width, f'Horizontal document width mismatch at {width}: {layout["scrollWidth"]}'
                 assert not layout['overflow'], f'Content outside viewport at {width}: {layout["overflow"]}'
                 assert not layout['brokenImages'], f'Missing images at {width}: {layout["brokenImages"]}'
                 if width in [320, 640, 960, 1440]:
