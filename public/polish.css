@@ -1,213 +1,39 @@
 /* Interaction polish layered after the layout CSS. */
 @media (pointer: fine) and (prefers-reduced-motion: no-preference) {
-  .impact-item,
-  .shift-card,
-  .timeline-card {
-    transition:
-      border-color .32s cubic-bezier(.16,1,.3,1),
-      box-shadow .38s cubic-bezier(.16,1,.3,1),
-      filter .38s cubic-bezier(.16,1,.3,1),
-      background-color .32s cubic-bezier(.16,1,.3,1),
-      transform .45s cubic-bezier(.16,1,.3,1);
+  .impact-item,.shift-card,.timeline-card,.feature-card,.exposure-card,.why-card,.closing-card {
+    transition:border-color .32s cubic-bezier(.16,1,.3,1),box-shadow .38s cubic-bezier(.16,1,.3,1),filter .38s cubic-bezier(.16,1,.3,1),background-color .32s cubic-bezier(.16,1,.3,1),transform .45s cubic-bezier(.16,1,.3,1);
   }
-
-  .impact-item:hover {
-    border-color: rgb(61 232 202 / 72%);
-    box-shadow: inset -28px -20px 58px rgb(62 255 210 / 13%), 0 12px 42px rgb(0 0 0 / 12%);
-  }
-
-  .shift-card:not(.is-selected):hover {
-    border-color: rgb(115 240 216 / 46%);
-    filter: brightness(1.075);
-  }
-
-  .timeline-card:hover {
-    filter: brightness(1.055) saturate(1.035);
-  }
-
-  .download-action,
-  .language-trigger,
-  .menu-toggle {
-    transition:
-      border-color .25s ease,
-      background-color .25s ease,
-      box-shadow .3s ease,
-      filter .25s ease;
-  }
-
-  .download-action:hover,
-  .language-trigger:hover,
-  .menu-toggle:hover {
-    box-shadow: 0 0 26px rgb(46 226 196 / 10%);
-    filter: brightness(1.08);
-  }
+  .impact-item:hover {border-color:rgb(61 232 202 / 72%);box-shadow:inset -28px -20px 58px rgb(62 255 210 / 13%),0 12px 42px rgb(0 0 0 / 12%);transform:translateX(3px);}
+  .shift-card:not(.is-selected):hover {border-color:rgb(115 240 216 / 46%);filter:brightness(1.075);}
+  .timeline-card:hover {filter:brightness(1.055) saturate(1.035);}
+  .feature-card:hover {transform:translateY(-4px);}
+  .exposure-card:hover,.why-card:hover,.closing-card:hover {box-shadow:0 20px 70px -52px rgb(46 226 196 / 42%);}
+  .button,.download-action,.language-trigger,.menu-toggle {transition:border-color .25s ease,background-color .25s ease,box-shadow .3s ease,filter .25s ease,transform .3s cubic-bezier(.16,1,.3,1);}
+  .button:hover {transform:translateY(-2px);box-shadow:0 10px 28px -18px rgb(46 226 196 / 60%);}
+  .button:active {transform:translateY(0) scale(.985);}
+  .download-action:hover,.language-trigger:hover,.menu-toggle:hover {box-shadow:0 0 26px rgb(46 226 196 / 10%);filter:brightness(1.08);}
 }
-
-/* All approved hero text styles use zero tracking. */
-.hero-copy h1 {
-  letter-spacing: 0;
+.hero-copy h1 {letter-spacing:0;}
+html {scrollbar-gutter:auto;scrollbar-width:none;}
+html::-webkit-scrollbar {width:0;height:0;}
+@media (max-width:1359px){.header-actions{gap:12px;}}
+@media (max-width:799px){.brand{width:177px}.brand-full{display:block}.brand-mobile{display:none}}
+@media (max-width:399px){.brand{width:160px}.header-actions{gap:2px}}
+@media (min-width:1360px){.priority-art{top:-374px;right:-133px;width:1112px}}
+@media (min-width:1100px) and (max-width:1359px){
+ .hero-description{width:540px;max-width:540px}.hero-actions{margin-top:130px}.why-card{min-height:382px}.guide .section-action{margin-top:32px}
 }
-
-/* Figma breakpoint frames use the full CSS viewport width. Keep scrolling, but do not
-   let a classic desktop scrollbar steal 15px from every grid and text measure. */
-html {
-  scrollbar-gutter: auto;
-  scrollbar-width: none;
+@media (min-width:800px) and (max-width:1099px){
+ .hero-copy h1{width:430px;max-width:430px}.hero-description{width:308px;max-width:308px}.hero-actions{margin-top:114px}.shifts{grid-template-columns:minmax(0,.754fr) minmax(0,1fr)}.why-card{min-height:389px}.guide .section-action{margin-top:32px}.closing-card{min-height:441px}.consultation-form{width:61%;max-width:none}
 }
-html::-webkit-scrollbar {
-  width: 0;
-  height: 0;
+@media (min-width:580px) and (max-width:799px){
+ .hero-description{width:100%;max-width:none}.why-card{min-height:569px}.guide .section-action,.framework .section-action{margin-top:32px}.framework-heading{margin-bottom:32px}
 }
-
-/* Responsive headers use the full Kaspersky lockup, not the short mobile mark.
-   The action-group gaps are 12px in the 1200/960/640/480 frames and 2px at 320. */
-@media (max-width: 1359px) {
-  .header-actions {
-    gap: 12px;
-  }
+@media (min-width:400px) and (max-width:579px){
+ .why-card{min-height:619px}.guide .section-action,.framework .section-action{margin-top:32px}.framework-heading{margin-bottom:32px}
 }
-
-@media (max-width: 799px) {
-  .brand {
-    width: 177px;
-  }
-
-  .brand-full {
-    display: block;
-  }
-
-  .brand-mobile {
-    display: none;
-  }
+@media (max-width:399px){
+ .why-card{min-height:591px}.guide .section-action,.framework .section-action{margin-top:32px}.framework-heading{margin-bottom:32px}
 }
-
-@media (max-width: 399px) {
-  .brand {
-    width: 160px;
-  }
-
-  .header-actions {
-    gap: 2px;
-  }
-}
-
-/* Position the transparent artwork from the original 1440 composition.
-   The glow stays behind Priority rather than entering the next heading. */
-@media (min-width: 1360px) {
-  .priority-art {
-    top: -374px;
-    right: -133px;
-    width: 1112px;
-  }
-}
-
-/* 1200 frame. */
-@media (min-width: 1100px) and (max-width: 1359px) {
-  .hero-description {
-    width: 540px;
-    max-width: 540px;
-  }
-
-  .hero-actions {
-    margin-top: 130px;
-  }
-
-  .why-card {
-    min-height: 382px;
-  }
-
-  .guide .section-action {
-    margin-top: 32px;
-  }
-}
-
-/* 960 frame. */
-@media (min-width: 800px) and (max-width: 1099px) {
-  .hero-copy h1 {
-    width: 430px;
-    max-width: 430px;
-  }
-
-  .hero-description {
-    width: 308px;
-    max-width: 308px;
-  }
-
-  .hero-actions {
-    margin-top: 114px;
-  }
-
-  .shifts {
-    grid-template-columns: minmax(0, .754fr) minmax(0, 1fr);
-  }
-
-  .why-card {
-    min-height: 389px;
-  }
-
-  .guide .section-action {
-    margin-top: 32px;
-  }
-
-  .closing-card {
-    min-height: 441px;
-  }
-
-  .consultation-form {
-    width: 61%;
-    max-width: none;
-  }
-}
-
-/* 640 frame. */
-@media (min-width: 580px) and (max-width: 799px) {
-  .hero-description {
-    width: 100%;
-    max-width: none;
-  }
-
-  .why-card {
-    min-height: 569px;
-  }
-
-  .guide .section-action,
-  .framework .section-action {
-    margin-top: 32px;
-  }
-
-  .framework-heading {
-    margin-bottom: 32px;
-  }
-}
-
-/* 480 frame. */
-@media (min-width: 400px) and (max-width: 579px) {
-  .why-card {
-    min-height: 619px;
-  }
-
-  .guide .section-action,
-  .framework .section-action {
-    margin-top: 32px;
-  }
-
-  .framework-heading {
-    margin-bottom: 32px;
-  }
-}
-
-/* 320 frame. */
-@media (max-width: 399px) {
-  .why-card {
-    min-height: 591px;
-  }
-
-  .guide .section-action,
-  .framework .section-action {
-    margin-top: 32px;
-  }
-
-  .framework-heading {
-    margin-bottom: 32px;
-  }
-}
+/* Touch devices receive explicit pressed feedback without hover-only movement. */
+@media (pointer:coarse){.button:active,.shift-card:active,.impact-item:active{filter:brightness(1.1);}}
