@@ -112,19 +112,6 @@ html::-webkit-scrollbar {
     margin-top: 130px;
   }
 
-  .hero-artwork {
-    width: 1313px;
-    height: 926px;
-    left: 329px;
-    top: -203px;
-  }
-
-  .hero-artwork img {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-  }
-
   .why-card {
     min-height: 382px;
   }
@@ -148,19 +135,6 @@ html::-webkit-scrollbar {
 
   .hero-actions {
     margin-top: 114px;
-  }
-
-  .hero-artwork {
-    width: 1170px;
-    height: 825px;
-    left: 193px;
-    top: -145px;
-  }
-
-  .hero-artwork img {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
   }
 
   .shifts {
@@ -192,19 +166,6 @@ html::-webkit-scrollbar {
     max-width: none;
   }
 
-  .hero-artwork {
-    width: 1026px;
-    height: 971px;
-    left: -123px;
-    top: -45px;
-  }
-
-  .hero-artwork img {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-  }
-
   .why-card {
     min-height: 569px;
   }
@@ -221,19 +182,6 @@ html::-webkit-scrollbar {
 
 /* 480 frame. */
 @media (min-width: 400px) and (max-width: 579px) {
-  .hero-artwork {
-    width: 976px;
-    height: 1259px;
-    left: -165px;
-    top: -278px;
-  }
-
-  .hero-artwork img {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-  }
-
   .why-card {
     min-height: 619px;
   }
@@ -250,19 +198,6 @@ html::-webkit-scrollbar {
 
 /* 320 frame. */
 @media (max-width: 399px) {
-  .hero-artwork {
-    width: 684px;
-    height: 483px;
-    left: -124px;
-    top: 331px;
-  }
-
-  .hero-artwork img {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-  }
-
   .why-card {
     min-height: 591px;
   }
