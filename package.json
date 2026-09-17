@@ -8,8 +8,8 @@
     "build": "node scripts/build.mjs",
     "dev": "node scripts/serve.mjs",
     "preview": "node scripts/serve.mjs",
-    "check": "node --check src/main.js && node --check src/motion.js && node --check src/interactive.js && node --check src/form.js",
-    "test": "python3 tests/browser_test.py"
+    "check": "node --check src/main.js && node --check src/motion.js && node --check src/interactive.js && node --check src/form.js && node --check src/dialog-focus.js",
+    "test": "python3 tests/browser_test.py && python3 tests/verify_report.py"
   },
   "engines": {"node": ">=22"}
 }
