@@ -1,0 +1,79 @@
+/* Interaction polish layered after the layout CSS. Static geometry is intentionally unchanged. */
+@media (pointer: fine) and (prefers-reduced-motion: no-preference) {
+  .feature-card[data-light],
+  .closing-card[data-light] {
+    --light-x: 50%;
+    --light-y: 50%;
+    isolation: isolate;
+  }
+
+  .feature-card[data-light]::after,
+  .closing-card[data-light]::after {
+    content: '';
+    position: absolute;
+    z-index: 0;
+    inset: 0;
+    border-radius: inherit;
+    pointer-events: none;
+    opacity: 0;
+    background: radial-gradient(
+      360px circle at var(--light-x) var(--light-y),
+      rgb(61 232 202 / 13%),
+      rgb(61 232 202 / 4%) 31%,
+      transparent 64%
+    );
+    transition: opacity .35s cubic-bezier(.16,1,.3,1);
+  }
+
+  .feature-card[data-light]:hover::after,
+  .closing-card[data-light]:hover::after { opacity: 1; }
+
+  .feature-card[data-light] > *,
+  .closing-card[data-light] > * { position: relative; z-index: 1; }
+
+  .impact-item,
+  .shift-card,
+  .timeline-card {
+    transition:
+      border-color .32s cubic-bezier(.16,1,.3,1),
+      box-shadow .38s cubic-bezier(.16,1,.3,1),
+      filter .38s cubic-bezier(.16,1,.3,1),
+      background-color .32s cubic-bezier(.16,1,.3,1);
+  }
+
+  .impact-item:hover {
+    border-color: rgb(61 232 202 / 72%);
+    box-shadow: inset -28px -20px 58px rgb(62 255 210 / 13%), 0 12px 42px rgb(0 0 0 / 12%);
+  }
+
+  .shift-card:not(.is-selected):hover {
+    border-color: rgb(115 240 216 / 46%);
+    filter: brightness(1.075);
+  }
+
+  .timeline-card:hover {
+    filter: brightness(1.055) saturate(1.035);
+  }
+
+  .download-action,
+  .language-trigger,
+  .menu-toggle {
+    transition:
+      border-color .25s ease,
+      background-color .25s ease,
+      box-shadow .3s ease,
+      filter .25s ease;
+  }
+
+  .download-action:hover,
+  .language-trigger:hover,
+  .menu-toggle:hover {
+    box-shadow: 0 0 26px rgb(46 226 196 / 10%);
+    filter: brightness(1.08);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .feature-card[data-light]::after,
+  .closing-card[data-light]::after { display: none; }
+}
