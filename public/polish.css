@@ -48,9 +48,15 @@
   letter-spacing: 0;
 }
 
-/* Figma breakpoint frames use the full CSS viewport width. */
+/* Figma breakpoint frames use the full CSS viewport width. Keep scrolling, but do not
+   let a classic desktop scrollbar steal 15px from every grid and text measure. */
 html {
   scrollbar-gutter: auto;
+  scrollbar-width: none;
+}
+html::-webkit-scrollbar {
+  width: 0;
+  height: 0;
 }
 
 /* Responsive headers use the full Kaspersky lockup, not the short mobile mark.
