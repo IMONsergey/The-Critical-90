@@ -48,11 +48,41 @@
   letter-spacing: 0;
 }
 
-/* The design frames are 1440 / 1200 / 960 / 640 / 480 / 320 CSS pixels.
-   Reserving a permanent scrollbar gutter made every desktop/tablet layout 15px narrower
-   than its Figma frame, which shifted grids, text wraps and right-aligned content. */
+/* Figma breakpoint frames use the full CSS viewport width. */
 html {
   scrollbar-gutter: auto;
+}
+
+/* Responsive headers use the full Kaspersky lockup, not the short mobile mark.
+   The action-group gaps are 12px in the 1200/960/640/480 frames and 2px at 320. */
+@media (max-width: 1359px) {
+  .header-actions {
+    gap: 12px;
+  }
+}
+
+@media (max-width: 799px) {
+  .brand {
+    width: 177px;
+  }
+
+  .brand-full {
+    display: block;
+  }
+
+  .brand-mobile {
+    display: none;
+  }
+}
+
+@media (max-width: 399px) {
+  .brand {
+    width: 160px;
+  }
+
+  .header-actions {
+    gap: 2px;
+  }
 }
 
 /* Position the transparent artwork from the original 1440 composition.
@@ -76,8 +106,7 @@ html {
   }
 }
 
-/* 960 frame: the visual/control split is 368 / 488 inside an 880px container.
-   The CTA and form widths/heights below are taken from the approved responsive frame. */
+/* 960 frame: the visual/control split is 368 / 488 inside an 880px container. */
 @media (min-width: 800px) and (max-width: 1099px) {
   .shifts {
     grid-template-columns: minmax(0, .754fr) minmax(0, 1fr);
