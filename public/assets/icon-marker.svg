@@ -1,0 +1,16 @@
+<svg preserveAspectRatio="none" overflow="visible" style="display: block;" width="19" height="19.8597" viewBox="0 0 19 19.8597" fill="none" xmlns="http://www.w3.org/2000/svg">
+<g id="Impact / Marker / Revenue">
+<path d="M7.56526 0.499033C8.76928 -0.166345 10.2307 -0.166344 11.4347 0.499034L16.9347 3.53851C18.209 4.24269 19 5.5836 19 7.03947V12.8202C19 14.2761 18.209 15.617 16.9347 16.3212L11.4347 19.3606C10.2307 20.026 8.76927 20.026 7.56526 19.3606L2.06525 16.3212C0.791014 15.617 0 14.2761 0 12.8202V7.03947C0 5.5836 0.791015 4.24269 2.06526 3.53851L7.56526 0.499033Z" fill="url(#paint0_radial_0_136)"/>
+<path d="M7.56526 0.499033C8.76928 -0.166345 10.2307 -0.166344 11.4347 0.499034L16.9347 3.53851C18.209 4.24269 19 5.5836 19 7.03947V12.8202C19 14.2761 18.209 15.617 16.9347 16.3212L11.4347 19.3606C10.2307 20.026 8.76927 20.026 7.56526 19.3606L2.06525 16.3212C0.791014 15.617 0 14.2761 0 12.8202V7.03947C0 5.5836 0.791015 4.24269 2.06526 3.53851L7.56526 0.499033Z" fill="url(#paint1_radial_0_136)"/>
+</g>
+<defs>
+<radialGradient id="paint0_radial_0_136" cx="0" cy="0" r="1" gradientTransform="matrix(-3.19948 18.9829 -17.175 -2.70046 12.3409 6.49322)" gradientUnits="userSpaceOnUse">
+<stop stop-color="#29CCB1"/>
+<stop offset="1" stop-color="#00EDC6"/>
+</radialGradient>
+<radialGradient id="paint1_radial_0_136" cx="0" cy="0" r="1" gradientTransform="matrix(13.5152 -7.15848 8.48132 14.9378 5.48483 17.0883)" gradientUnits="userSpaceOnUse">
+<stop stop-color="#29CCB1"/>
+<stop offset="1" stop-color="#C0FFDD"/>
+</radialGradient>
+</defs>
+</svg>

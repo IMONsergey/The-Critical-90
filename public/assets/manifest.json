@@ -1,0 +1,106 @@
+[
+  {
+    "name": "hero.webp",
+    "bytes": 28118,
+    "width": 1026,
+    "height": 820
+  },
+  {
+    "name": "priority.webp",
+    "bytes": 74438,
+    "width": 900,
+    "height": 1024
+  },
+  {
+    "name": "footer.webp",
+    "bytes": 55398,
+    "width": 1024,
+    "height": 547
+  },
+  {
+    "name": "shift-operations.webp",
+    "bytes": 54502,
+    "width": 765,
+    "height": 1024
+  },
+  {
+    "name": "shift-revenue.webp",
+    "bytes": 57988,
+    "width": 768,
+    "height": 860
+  },
+  {
+    "name": "shift-compliance.webp",
+    "bytes": 36070,
+    "width": 768,
+    "height": 860
+  },
+  {
+    "name": "shift-trust.webp",
+    "bytes": 26162,
+    "width": 768,
+    "height": 860
+  },
+  {
+    "name": "why-background.webp",
+    "bytes": 22790,
+    "width": 725,
+    "height": 1024
+  },
+  {
+    "name": "why-90.webp",
+    "bytes": 25610,
+    "width": 754,
+    "height": 739
+  },
+  {
+    "name": "cta.webp",
+    "bytes": 1115490,
+    "width": 2149,
+    "height": 2200
+  },
+  {
+    "name": "brand.svg",
+    "bytes": 12997
+  },
+  {
+    "name": "icon-impact.svg",
+    "bytes": 3836
+  },
+  {
+    "name": "icon-decisions.svg",
+    "bytes": 3690
+  },
+  {
+    "name": "icon-functions.svg",
+    "bytes": 3326
+  },
+  {
+    "name": "icon-actions.svg",
+    "bytes": 4386
+  },
+  {
+    "name": "icon-evidence.svg",
+    "bytes": 4259
+  },
+  {
+    "name": "icon-protection.svg",
+    "bytes": 2890
+  },
+  {
+    "name": "icon-revenue.svg",
+    "bytes": 7296
+  },
+  {
+    "name": "icon-marker.svg",
+    "bytes": 1551
+  },
+  {
+    "name": "icon-compliance.svg",
+    "bytes": 7387
+  },
+  {
+    "name": "icon-trust.svg",
+    "bytes": 3670
+  }
+]
