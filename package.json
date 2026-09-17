@@ -1,13 +1,15 @@
 {
   "name": "the-critical-90",
-  "private": true,
   "version": "1.0.0",
+  "private": true,
   "type": "module",
-  "description": "Kaspersky campaign landing page",
+  "description": "The Critical 90 — Kaspersky interactive executive guide",
   "scripts": {
-    "dev": "python3 -m http.server 4173 --directory public",
-    "build": "python3 scripts/build.py",
-    "check": "node --check public/app.js && node --check public/site-config.js",
-    "test": "python3 scripts/test_site.py"
-  }
+    "build": "node scripts/build.mjs",
+    "dev": "node scripts/serve.mjs",
+    "preview": "node scripts/serve.mjs",
+    "check": "node --check src/main.js && node --check src/motion.js && node --check src/interactive.js && node --check src/form.js",
+    "test": "python3 tests/browser_test.py"
+  },
+  "engines": {"node": ">=22"}
 }

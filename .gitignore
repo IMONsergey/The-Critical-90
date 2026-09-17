@@ -1,6 +1,7 @@
 dist/
-.preview/
 node_modules/
-test-results/
+.env*
+!.env.example
 __pycache__/
+test-results/
 .DS_Store
