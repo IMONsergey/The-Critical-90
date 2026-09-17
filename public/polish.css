@@ -48,6 +48,13 @@
   letter-spacing: 0;
 }
 
+/* The design frames are 1440 / 1200 / 960 / 640 / 480 / 320 CSS pixels.
+   Reserving a permanent scrollbar gutter made every desktop/tablet layout 15px narrower
+   than its Figma frame, which shifted grids, text wraps and right-aligned content. */
+html {
+  scrollbar-gutter: auto;
+}
+
 /* Position the transparent artwork from the original 1440 composition.
    The glow stays behind Priority rather than entering the next heading. */
 @media (min-width: 1360px) {
@@ -55,5 +62,89 @@
     top: -374px;
     right: -133px;
     width: 1112px;
+  }
+}
+
+/* 1200 frame: match the approved card height and 32px guide-to-download gap. */
+@media (min-width: 1100px) and (max-width: 1359px) {
+  .why-card {
+    min-height: 382px;
+  }
+
+  .guide .section-action {
+    margin-top: 32px;
+  }
+}
+
+/* 960 frame: the visual/control split is 368 / 488 inside an 880px container.
+   The CTA and form widths/heights below are taken from the approved responsive frame. */
+@media (min-width: 800px) and (max-width: 1099px) {
+  .shifts {
+    grid-template-columns: minmax(0, .754fr) minmax(0, 1fr);
+  }
+
+  .why-card {
+    min-height: 389px;
+  }
+
+  .guide .section-action {
+    margin-top: 32px;
+  }
+
+  .closing-card {
+    min-height: 441px;
+  }
+
+  .consultation-form {
+    width: 61%;
+    max-width: none;
+  }
+}
+
+/* 640 frame: approved vertical rhythm uses 32px around the framework timeline. */
+@media (min-width: 580px) and (max-width: 799px) {
+  .why-card {
+    min-height: 569px;
+  }
+
+  .guide .section-action,
+  .framework .section-action {
+    margin-top: 32px;
+  }
+
+  .framework-heading {
+    margin-bottom: 32px;
+  }
+}
+
+/* 480 frame. */
+@media (min-width: 400px) and (max-width: 579px) {
+  .why-card {
+    min-height: 619px;
+  }
+
+  .guide .section-action,
+  .framework .section-action {
+    margin-top: 32px;
+  }
+
+  .framework-heading {
+    margin-bottom: 32px;
+  }
+}
+
+/* 320 frame. */
+@media (max-width: 399px) {
+  .why-card {
+    min-height: 591px;
+  }
+
+  .guide .section-action,
+  .framework .section-action {
+    margin-top: 32px;
+  }
+
+  .framework-heading {
+    margin-bottom: 32px;
   }
 }
