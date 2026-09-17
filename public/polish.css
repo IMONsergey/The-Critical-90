@@ -95,8 +95,17 @@ html {
   }
 }
 
-/* 1200 frame: match the approved card height and 32px guide-to-download gap. */
+/* 1200 frame. */
 @media (min-width: 1100px) and (max-width: 1359px) {
+  .hero-description {
+    width: 540px;
+    max-width: 540px;
+  }
+
+  .hero-actions {
+    margin-top: 130px;
+  }
+
   .why-card {
     min-height: 382px;
   }
@@ -106,8 +115,22 @@ html {
   }
 }
 
-/* 960 frame: the visual/control split is 368 / 488 inside an 880px container. */
+/* 960 frame. */
 @media (min-width: 800px) and (max-width: 1099px) {
+  .hero-copy h1 {
+    width: 430px;
+    max-width: 430px;
+  }
+
+  .hero-description {
+    width: 308px;
+    max-width: 308px;
+  }
+
+  .hero-actions {
+    margin-top: 114px;
+  }
+
   .shifts {
     grid-template-columns: minmax(0, .754fr) minmax(0, 1fr);
   }
@@ -130,8 +153,13 @@ html {
   }
 }
 
-/* 640 frame: approved vertical rhythm uses 32px around the framework timeline. */
+/* 640 frame. */
 @media (min-width: 580px) and (max-width: 799px) {
+  .hero-description {
+    width: 100%;
+    max-width: none;
+  }
+
   .why-card {
     min-height: 569px;
   }
