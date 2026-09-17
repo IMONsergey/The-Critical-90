@@ -1,0 +1,46 @@
+name: Check official font CDN
+on:
+  push:
+    paths: ['.github/workflows/font-source-check.yml']
+permissions:
+  contents: read
+jobs:
+  inspect:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Inspect official regional stylesheets
+        shell: python
+        run: |
+          import urllib.request,urllib.parse,re,json,concurrent.futures
+          roots=['https://me-en.kaspersky.com/','https://latam.kaspersky.com/']
+          def read(url):
+            req=urllib.request.Request(url,headers={'User-Agent':'Mozilla/5.0','Origin':'https://imonsergey.github.io'})
+            with urllib.request.urlopen(req,timeout=20) as r: return r.read().decode('utf-8','ignore'),dict(r.headers)
+          def inspect(url):
+            try:
+              html,_=read(url); styles=[(url,html)]
+              css=[urllib.parse.urljoin(url,u) for u in re.findall(r'(?:href|src)=[\"\']([^\"\']+\.css[^\"\']*)',html)]
+              for item in css[:16]:
+                try: styles.append((item,read(item)[0]))
+                except: pass
+              found=[]
+              for src,text in styles:
+                for face in re.findall(r'@font-face\s*\{[^}]+\}',text):
+                  if 'kaspersky' not in face.lower(): continue
+                  urls=[urllib.parse.urljoin(src,u.strip('"\'')) for u in re.findall(r'url\(([^)]+)\)',face)]
+                  for u in urls:
+                    if '.woff' not in u: continue
+                    try:
+                      req=urllib.request.Request(u,method='HEAD',headers={'User-Agent':'Mozilla/5.0','Origin':'https://imonsergey.github.io'})
+                      with urllib.request.urlopen(req,timeout=15) as r: found.append({'face':face,'url':u,'status':r.status,'cors':r.headers.get('Access-Control-Allow-Origin')})
+                    except Exception as e: found.append({'url':u,'error':str(e)})
+              return {'source':url,'stylesheets':css,'fonts':found}
+            except Exception as e:return {'source':url,'error':str(e)}
+          with concurrent.futures.ThreadPoolExecutor(max_workers=2) as pool: result=list(pool.map(inspect,roots))
+          open('font-cdn.json','w').write(json.dumps(result,indent=2))
+          print(json.dumps(result,indent=2))
+      - uses: actions/upload-artifact@v4
+        with:
+          name: font-cdn
+          path: font-cdn.json
+          retention-days: 2
