@@ -1,4 +1,4 @@
-/* Interaction polish layered after the layout CSS. Static geometry is intentionally unchanged. */
+/* Interaction polish layered after the layout CSS. */
 @media (pointer: fine) and (prefers-reduced-motion: no-preference) {
   .impact-item,
   .shift-card,
@@ -40,5 +40,20 @@
   .menu-toggle:hover {
     box-shadow: 0 0 26px rgb(46 226 196 / 10%);
     filter: brightness(1.08);
+  }
+}
+
+/* All approved hero text styles use zero tracking. */
+.hero-copy h1 {
+  letter-spacing: 0;
+}
+
+/* Position the transparent artwork from the original 1440 composition.
+   The glow stays behind Priority rather than entering the next heading. */
+@media (min-width: 1360px) {
+  .priority-art {
+    top: -374px;
+    right: -133px;
+    width: 1112px;
   }
 }
