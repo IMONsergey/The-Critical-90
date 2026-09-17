@@ -28,6 +28,20 @@ jobs:
         with:
           node-version: '22'
       - run: npm run check && npm run build
+      - name: Exact source used for review
+        uses: actions/upload-artifact@v4
+        with:
+          name: website-source
+          path: |
+            index.html
+            src/
+            public/
+            scripts/
+            tests/
+            docs/
+            package.json
+            README.md
+          retention-days: 7
       - name: Browser tooling
         run: |
           python -m pip install --quiet playwright
