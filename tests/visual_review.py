@@ -1,4 +1,4 @@
-"""Deterministic geometry evidence; reference sizes are from KASPER WEB, 2026-09-18."""
+"""Deterministic geometry evidence against KASPER WEB, measured 2026-09-18."""
 import asyncio
 import json
 import os
@@ -12,7 +12,7 @@ ROOT = Path(__file__).resolve().parents[1]
 OUT = ROOT / 'test-results'
 BASE = os.environ.get('TEST_URL', 'http://127.0.0.1:4173/The-Critical-90/')
 WIDTHS = [320,375,480,640,768,960,1024,1200,1366,1440,1920]
-# y/height, measured from the current approved frames, not the previous website.
+# y/height, measured from the six approved Figma frames, not the previous website.
 TARGETS = {
   1440: [[993,520],[1703,688],[2581,562],[3333,886],[4409,988],[5624,662],[6488,861],[7385,27]],
   1200: [[840,464],[1424,777.13],[2321.13,382],[2823.13,717],[3660.13,797],[4577.13,480],[5177.13,878],[6103.13,25.373]],
@@ -69,6 +69,15 @@ async def run():
                 await context.close()
             await browser.close()
         assert not report['errors'], report['errors']
+        for layout in report['layouts']:
+            for selector, delta in layout['deltas'].items():
+                for dimension, value in delta.items():
+                    assert abs(value)<=4, f'{layout["viewport"]}px {selector} {dimension}: {value:+.2f}px from Figma'
+            width=layout['viewport']
+            gutter=56 if width>=1360 else 48 if width>=1100 else 40 if width>=800 else 28 if width>=580 else 24 if width>=400 else 20
+            expected=min(width-2*gutter,1328)
+            assert abs(layout['geometry']['#priority'][0]['width']-expected)<=2, f'Container width at {width}'
+        print('Verified Figma section y/height within 4px and all container widths within 2px.')
     finally:
         (OUT/'geometry.json').write_text(json.dumps(report,indent=2))
         if server:
