@@ -89,6 +89,8 @@ p { margin: 0; }
 .priority { display: grid; grid-template-columns: minmax(0,1fr) 368px; gap: 100px; min-height: 520px; }
 .priority-art picture { display: block; }
 .priority-art img { width: 100%; height: auto; }
+.priority-desktop-break { display: none; }
+.timeline-break-tablet { display: none; }
 .impact-list { align-self: start; z-index: 2; }
 .feature-icon { object-fit: contain; width: 52px; height: 57px; transition: transform .65s var(--ease-out),filter .4s; }
 .impact-items { position: relative; display: flex; flex-direction: column; gap: 10px; margin-top: -27px; }
@@ -291,6 +293,7 @@ h1 { margin: 0; font-weight: 500; font-size: 82px; letter-spacing: 0; line-heigh
 
 /* Desktop page lights anchored to the matching content sections. */
 @media (min-width:1360px) {
+  .priority-desktop-break { display: initial; }
   .priority .section-ambient { left: 1088px; top: 35px; width: 472px; height: 581px; }
   .shifts .section-ambient { left: -139px; top: 185px; }
   .guide .section-ambient { left: 1023px; top: -334px; }
@@ -530,10 +533,10 @@ h1 { margin: 0; font-weight: 500; font-size: 82px; letter-spacing: 0; line-heigh
   .framework-heading h2 { font-size: 36px; line-height: 41px; }
   .framework-heading>p:last-child { font-size: 18px; line-height: 25px; }
   .timeline { flex-direction: column; align-items: center; gap: 24px; }
-  .timeline-card { width: 352px; flex: none; min-height: 456px; padding: 28px; }
+  .timeline-card { width: 352px; flex: none; min-height: 456px; padding: 27px; }
   .timeline-number { height: 132px; margin-bottom: 14px; }
   .timeline-unit { font-size: 18px; line-height: 22px; margin-bottom: 20px; }
-  .timeline-title { font-size: 24px; line-height: 30px; }
+  .timeline-title { font-size: 23px; line-height: 29px; }
   .framework .section-action { margin-top: 32px; }
   .closing-card { padding: 27px; min-height: 661.43px; }
   .closing-copy h2 { font-size: 44px; line-height: 48px; margin-top: 24px; }
@@ -655,7 +658,7 @@ h1 { margin: 0; font-weight: 500; font-size: 82px; letter-spacing: 0; line-heigh
   .framework-heading>p:last-child { font-size: 16px; line-height: 22px; }
   .timeline-grid-lines { width: 100%; height: 912px; }
   .timeline-halo { left: calc(50% - 136px); top: 442px; width: 272px; height: 394px; border-width: 24.19px; filter: blur(24.78px); }
-  .timeline-card { width: 100%; max-width: 310px; min-height: 412px; padding: 28px; }
+  .timeline-card { width: 100%; max-width: 310px; min-height: 412px; padding: 27px; }
   .timeline-number { height: 112px; }
   .timeline-title { font-size: 20px; line-height: 25px; }
   .timeline-unit { font-size: 18px; line-height: 22px; }
@@ -703,4 +706,9 @@ h1 { margin: 0; font-weight: 500; font-size: 82px; letter-spacing: 0; line-heigh
 /* The exported artwork includes 5.23px of visual overhang above its Figma frame. */
 @media (min-width:1360px) {
   .why-number img { height: auto; transform: translateY(-5.23px); }
+}
+
+/* The 640px source explicitly breaks Framework supporting copy. */
+@media (min-width:580px) and (max-width:799px) {
+  .timeline-description .timeline-break-tablet { display: initial; }
 }
