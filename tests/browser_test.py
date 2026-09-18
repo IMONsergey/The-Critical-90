@@ -91,11 +91,15 @@ async def run():
                 await page.locator(f'#shift-tab-{i}').click()
                 assert await page.locator(f'#shift-tab-{i}').get_attribute('aria-selected')=='true'
                 assert await page.locator(f'#shift-panel-{i}').is_visible()
+                assert await page.locator('.shift-progress .is-complete').count()==i
+                assert await page.locator(f'#shift-panel-{i} img').evaluate('e=>e.naturalWidth===768 && e.naturalHeight===860')
+                await page.locator('.shift-visual').screenshot(path=str(OUT/f'slider-image-{i+1}-1440.png'))
             await page.locator('#shift-tab-1').focus()
             for key,index in [('ArrowRight',2),('Home',0),('End',3),('ArrowDown',0),('ArrowUp',3)]:
                 await page.keyboard.press(key)
                 assert await page.locator(f'#shift-tab-{index}').get_attribute('aria-selected')=='true'
-            assert await page.locator('.carousel-play').is_disabled()
+            assert await page.locator('.carousel-play,.shift-caption').count()==0
+            assert await page.locator('.shift-visual').evaluate('e=>e.style.getPropertyValue("--slide-progress")==="1"')
             report['checks'].append('Four slide states, arrows, Home/End and reduced-motion autoplay lock')
             await page.locator('#shifts').screenshot(path=str(OUT/'slider-trust.png'))
             for day in (30,60,90):
@@ -129,8 +133,25 @@ async def run():
             await page.locator('.shift-visual').evaluate('e=>e.scrollIntoView({block:"center",behavior:"instant"})')
             await page.mouse.move(2,2)
             initial=await page.locator('[role=tab][aria-selected=true]').get_attribute('id')
+            await page.wait_for_timeout(350)
+            progress=await page.locator('.shift-visual').evaluate('e=>parseFloat(e.style.getPropertyValue("--slide-progress"))')
+            assert 0<progress<1,progress
             await page.wait_for_timeout(9100)
             assert initial!=await page.locator('[role=tab][aria-selected=true]').get_attribute('id')
+            # Manual selection restarts the timed strip, then the last slide wraps to the first.
+            await page.locator('#shift-tab-3').click()
+            assert await page.locator('.shift-visual').evaluate('e=>parseFloat(e.style.getPropertyValue("--slide-progress"))<.06')
+            assert await page.locator('.shift-progress .is-complete').count()==3
+            await page.mouse.move(2,2)
+            await page.wait_for_timeout(9100)
+            assert await page.locator('#shift-tab-0').get_attribute('aria-selected')=='true'
+            assert await page.locator('#shift-panel-0').is_visible()
+            assert await page.locator('.shift-progress .is-complete').count()==0
+            await page.locator('.shift-visual').hover()
+            paused=await page.locator('.shift-visual').evaluate('e=>e.style.getPropertyValue("--slide-progress")')
+            await page.wait_for_timeout(350)
+            assert paused==await page.locator('.shift-visual').evaluate('e=>e.style.getPropertyValue("--slide-progress")')
+            report['checks'].append('Story progress fills, advances image and card, resets on selection, wraps and pauses on image hover')
             await page.evaluate('scrollTo({top:0,behavior:"instant"})')
             await page.wait_for_timeout(200)
             frozen=await page.locator('.shift-visual').evaluate('e=>e.style.getPropertyValue("--slide-progress")')
@@ -155,7 +176,7 @@ async def run():
             await page.emulate_media(reduced_motion='reduce')
             await page.wait_for_timeout(100)
             assert await page.locator('.hero-artwork').evaluate('e=>!e.style.getPropertyValue("--hero-x")')
-            assert await page.locator('.carousel-play').is_disabled()
+            assert await page.locator('.shift-visual').evaluate('e=>e.style.getPropertyValue("--slide-progress")==="1"')
             report['checks'].append('Autoplay advances, pauses offscreen; pointer depth cancels when motion preference changes')
             await context.close()
 
@@ -168,6 +189,10 @@ async def run():
             await page.locator('.shift-visual').dispatch_event('pointerup',{'pointerType':'touch','clientX':70,'clientY':405})
             await page.wait_for_timeout(500)
             assert await page.locator('#shift-tab-2').get_attribute('aria-selected')=='true'
+            await page.emulate_media(reduced_motion='reduce')
+            for i in range(4):
+                await page.locator(f'#shift-tab-{i}').click()
+                await page.locator('.shift-visual').screenshot(path=str(OUT/f'slider-image-{i+1}-320.png'))
             await page.locator('.hero-artwork').evaluate('e=>e.scrollIntoView({block:"center",behavior:"instant"})')
             assert await page.locator('.hero-artwork').evaluate('e=>!e.style.getPropertyValue("--hero-x")')
             report['checks'].append('Touch swipe and no touch parallax')

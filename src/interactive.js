@@ -58,7 +58,6 @@ export class ShiftSelector {
     this.panels = [...root.querySelectorAll('.shift-image')];
     this.tabs = [...root.querySelectorAll('[data-shift]')];
     this.indicators = [...root.querySelectorAll('.shift-progress > span')];
-    this.playButton = root.querySelector('.carousel-play');
     this.active = 1;
     this.elapsed = 0;
     this.lastTime = 0;
@@ -77,40 +76,42 @@ export class ShiftSelector {
         if (event.key === 'End') target = shifts.length - 1;
         if (target === undefined) return;
         event.preventDefault();
+        this.pause('focus');
         this.select(target, true);
         this.tabs[target].focus({ preventScroll: true });
       });
     });
-    root.addEventListener('pointerenter', event => {
+    this.visual.addEventListener('pointerenter', event => {
       if (event.pointerType !== 'touch' && matchMedia('(hover: hover) and (pointer: fine)').matches) this.pause('hover');
     }, { passive: true });
-    root.addEventListener('pointerleave', () => this.resume('hover'), { passive: true });
-    root.addEventListener('focusin', () => this.pause('focus'));
+    this.visual.addEventListener('pointerleave', () => this.resume('hover'), { passive: true });
+    root.addEventListener('focusin', event => {
+      if (event.target.matches(':focus-visible')) this.pause('focus');
+    });
+    root.addEventListener('pointerdown', () => this.resume('focus'), { passive:true });
     root.addEventListener('focusout', event => { if (!root.contains(event.relatedTarget)) this.resume('focus'); });
     document.addEventListener('visibilitychange', () => document.hidden ? this.pause('hidden') : this.resume('hidden'));
     document.addEventListener('critical:dialog', event => event.detail.open ? this.pause('dialog') : this.resume('dialog'));
     new IntersectionObserver(entries => {
       for (const entry of entries) entry.isIntersecting ? this.resume('offscreen') : this.pause('offscreen');
     }, { threshold: .15 }).observe(this.visual);
-    this.playButton.addEventListener('click', () => {
-      this.automatic = !reducedMotion.matches && !this.automatic;
-      this.updatePlayControl();
-      this.schedule();
-    });
     reducedMotion.addEventListener('change', () => {
+      this.automatic = !reducedMotion.matches;
       if (reducedMotion.matches) {
-        this.automatic = false;
         this.sequence++;
         this.animations.forEach(animation => animation.cancel());
         this.animations = [];
         this.panels.forEach((panel, index) => { panel.hidden = index !== this.active; });
       }
-      this.updatePlayControl();
+      this.updateProgress();
       this.schedule();
     });
     let touchStart = null;
     this.visual.addEventListener('pointerdown', event => {
-      if (event.pointerType === 'touch') touchStart = { x: event.clientX, y: event.clientY };
+      if (event.pointerType === 'touch') {
+        touchStart = { x: event.clientX, y: event.clientY };
+        this.pause('touch');
+      }
     }, { passive: true });
     this.visual.addEventListener('pointerup', event => {
       if (!touchStart) return;
@@ -118,18 +119,15 @@ export class ShiftSelector {
       const dy = event.clientY - touchStart.y;
       touchStart = null;
       if (Math.abs(dx) > 42 && Math.abs(dx) > Math.abs(dy) * 1.3) this.select((this.active + (dx < 0 ? 1 : 3)) % 4, true);
+      this.resume('touch');
     }, { passive: true });
-    this.visual.addEventListener('pointercancel', () => { touchStart = null; }, { passive: true });
-    this.updatePlayControl();
+    this.visual.addEventListener('pointercancel', () => { touchStart = null; this.resume('touch'); }, { passive: true });
+    this.updateProgress();
   }
   pause(reason) { this.pauses.add(reason); this.schedule(); }
   resume(reason) { this.pauses.delete(reason); this.schedule(); }
-  updatePlayControl() {
-    this.playButton.disabled = reducedMotion.matches;
-    this.playButton.setAttribute('aria-label', reducedMotion.matches ? 'Automatic rotation disabled by reduced motion' : this.automatic ? 'Pause automatic slide rotation' : 'Play automatic slide rotation');
-    this.playButton.setAttribute('aria-pressed', String(!this.automatic));
-    this.playButton.querySelector('use').setAttribute('href', this.automatic ? '#pause' : '#play');
-    if (!this.automatic) this.visual.style.setProperty('--slide-progress', '1');
+  updateProgress() {
+    this.visual.style.setProperty('--slide-progress', this.automatic ? String(Math.min(1, this.elapsed / config.carouselInterval)) : '1');
   }
   schedule() {
     if (this.frame) cancelAnimationFrame(this.frame);
@@ -140,15 +138,16 @@ export class ShiftSelector {
   tick(time) {
     if (this.lastTime) this.elapsed += Math.min(100, time - this.lastTime);
     this.lastTime = time;
-    this.visual.style.setProperty('--slide-progress', String(Math.min(1, this.elapsed / config.carouselInterval)));
+    this.updateProgress();
     if (this.elapsed >= config.carouselInterval) this.select((this.active + 1) % 4, false);
     if (this.automatic && !this.pauses.size && !reducedMotion.matches) this.frame = requestAnimationFrame(next => this.tick(next));
     else this.frame = 0;
   }
   select(index, userInitiated = false) {
     if (!Number.isInteger(index) || index < 0 || index >= this.panels.length) return;
-    if (userInitiated) { this.automatic = false; this.updatePlayControl(); this.schedule(); }
     this.elapsed = 0;
+    this.updateProgress();
+    if (userInitiated) this.schedule();
     if (index === this.active) return;
     this.animations.forEach(animation => animation.cancel());
     this.animations = [];
@@ -167,9 +166,10 @@ export class ShiftSelector {
       tab.setAttribute('aria-selected', String(i === index));
       tab.tabIndex = i === index ? 0 : -1;
     });
-    this.indicators.forEach((indicator, i) => indicator.classList.toggle('is-active', i === index));
-    this.root.querySelector('.shift-position').textContent = `${shifts[index].index} / 04`;
-    this.root.querySelector('.shift-category').textContent = shifts[index].category;
+    this.indicators.forEach((indicator, i) => {
+      indicator.classList.toggle('is-active', i === index);
+      indicator.classList.toggle('is-complete', i < index);
+    });
     if (userInitiated) this.root.querySelector('#shift-announcement').textContent = `${shifts[index].index} of 4. ${shifts[index].title}. ${shifts[index].category}.`;
     if (reducedMotion.matches) { old.hidden = true; return; }
     const incoming = next.animate([

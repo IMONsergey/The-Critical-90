@@ -110,13 +110,7 @@ p { margin: 0; }
 .shift-progress>span { height: 4px; background: #41484c; border-radius: 5px; overflow: hidden; flex: 1; }
 .shift-progress i { display: block; height: 100%; background: linear-gradient(90deg,#65f5c9,#19c8c5); transform-origin: left; transform: scaleX(0); }
 .shift-progress .is-active i { transform: scaleX(var(--slide-progress,1)); }
-.shift-caption { position: absolute; z-index: 3; left: 0; right: 0; bottom: 0; padding: 65px 24px 20px; display: flex; align-items: center; gap: 16px; opacity: 0; transform: translateY(6px); background: linear-gradient(transparent,#041319e6); pointer-events: none; transition: opacity .3s,transform .4s; }
-.shift-position { font-size: 12px; color: var(--muted); font-variant-numeric: tabular-nums; letter-spacing: .08em; }
-.shift-category { font-size: 14px; color: var(--accent); text-transform: uppercase; letter-spacing: .1em; }
-.shift-visual:hover .shift-caption, .shift-visual:focus-within .shift-caption { opacity: 1; transform: none; }
-.carousel-play { position: absolute; right: 16px; bottom: 12px; z-index: 6; width: 40px; height: 40px; padding: 10px; border-radius: 50%; border: 1px solid rgb(109 230 205 / 30%); background: rgb(5 19 22 / 75%); opacity: .65; transition: opacity .2s,background .2s; }
-.carousel-play .icon { width: 18px; height: 18px; }
-.carousel-play:hover { opacity: 1; background: #14413b; }
+.shift-progress .is-complete i { transform: scaleX(1); }
 .shift-card:hover { border-color: #58d4bc88; transform: translateY(-3px); }
 .shift-card.is-selected { border-color: #00edc6; background: radial-gradient(ellipse at 110% 115%,#367f6d,transparent 70%),linear-gradient(120deg,#102e32,#071e22 62%); box-shadow: inset 0 0 45px #29ccb110,0 0 36px #00ba9210; }
 .shift-card.is-selected .shift-index { color: #b4ecdf; }
@@ -489,8 +483,6 @@ h1 { margin: 0; font-weight: 500; font-size: 82px; letter-spacing: 0; line-heigh
   .priority-art { display: none; }
   .impact-list { width: 100%; }
   .shift-visual { width: 100%; max-width: 100%; }
-  .shift-caption { opacity: 1; transform: none; }
-  .carousel-play { opacity: .85; }
   .shift-progress { padding: 20px; }
   .why-copy { width: 100%; }
   .why-copy h2 br:first-child { display: none; }
@@ -562,7 +554,6 @@ h1 { margin: 0; font-weight: 500; font-size: 82px; letter-spacing: 0; line-heigh
   .page-flow { padding-top: 64px; }
   .priority .button { width: 100%; }
   .shift-meta { gap: 6px; }
-  .shift-category { font-size: 12px; }
   .feature-grid { grid-template-columns: 1fr; }
   .feature-outcome .button { font-size: 18px; padding-inline: 16px; }
   .section-action { margin-top: 40px; }
@@ -619,10 +610,6 @@ h1 { margin: 0; font-weight: 500; font-size: 82px; letter-spacing: 0; line-heigh
   .impact-icon { width: 30px; height: 30px; }
   .shift-tabs { grid-template-columns: 1fr; }
   .shift-progress { padding: 16px 16px 18px; }
-  .shift-caption { padding: 50px 16px 18px; }
-  .shift-category { font-size: 11px; }
-  .shift-position { font-size: 10px; }
-  .carousel-play { right: 10px; bottom: 10px; width: 34px; height: 34px; padding: 8px; }
   .eyebrow { font-size: 12px; }
   .feature-icon { width: 40px; height: 44px; }
   .framework-heading .eyebrow { font-size: 11px; letter-spacing: .06em; }
@@ -687,7 +674,7 @@ h1 { margin: 0; font-weight: 500; font-size: 82px; letter-spacing: 0; line-heigh
 }
 
 @media print {
-  .site-header, .button, .back-top, .carousel-play, .scroll-cue, dialog, .reading-progress { display: none !important; }
+  .site-header, .button, .back-top, .scroll-cue, dialog, .reading-progress { display: none !important; }
   body { background: white; color: black; }
   .hero-stage { min-height: 0; }
   .hero-copy { padding-block: 40px; }

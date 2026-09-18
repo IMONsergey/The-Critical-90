@@ -45,7 +45,7 @@ The UI uses Kaspersky Sans Display at weights 300, 400, 500 and 600 through veri
 - The hero responds to a fine pointer through a damped spring; touch devices do not run pointer motion.
 - Section reveals run once. Ambient depth is limited to visible elements. Scrolling remains native.
 - Four distinct approved images are connected to the cyber-shift tabs. Arrow keys, Home/End and touch swipes are supported.
-- Optional slide rotation pauses on hover, keyboard focus, hidden tabs, offscreen content and open dialogs. Manual selection stops rotation until Play is pressed.
+- The top progress strips advance the image and selected card every 8.5 seconds. Manual selection resets the timer. Rotation pauses over the image, during touch hold or keyboard navigation, in hidden tabs, offscreen and while dialogs are open; reduced motion disables it. Images have no bottom caption or playback overlay.
 - The header menu uses a native modal dialog with inert background, keyboard focus containment, Escape and focus restoration.
 - The 30/60/90 cards expose focused stage details without inventing new report claims.
 - `prefers-reduced-motion` disables parallax, entry transitions and automatic rotation.
