@@ -1,6 +1,19 @@
 /** Motion is input-driven; a single scheduled frame batches geometry reads before writes. */
-export const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
-const finePointer = window.matchMedia('(hover: hover) and (pointer: fine)');
+// Animation frames read cached state, not the native MediaQueryList getter.
+// This keeps frame-time reads from consuming a pending media-change notification.
+function mediaPreference(query) {
+  const media = window.matchMedia(query);
+  const preference = new EventTarget();
+  let matches = media.matches;
+  Object.defineProperty(preference, 'matches', { get: () => matches });
+  media.addEventListener('change', event => {
+    matches = event.matches;
+    preference.dispatchEvent(new Event('change'));
+  });
+  return preference;
+}
+export const reducedMotion = mediaPreference('(prefers-reduced-motion: reduce)');
+const finePointer = mediaPreference('(hover: hover) and (pointer: fine)');
 const clamp = (value, min, max) => Math.max(min, Math.min(max, value));
 
 export function animateIn(element, options = {}) {
