@@ -12,8 +12,6 @@
   <meta name="twitter:card" content="summary_large_image">
   <title>The Critical 90 — Kaspersky</title>
   <link rel="icon" type="image/svg+xml" href="./assets/favicon.svg">
-  <link rel="preload" as="image" href="./assets/hero.webp" media="(min-width: 768px)">
-  <link rel="preload" as="image" href="./assets/hero-mobile.webp" media="(max-width: 767px)">
   <link rel="stylesheet" href="./styles.css">
   <link rel="stylesheet" href="./brand-fonts.css">
   <script type="module" src="./main.js"></script>
@@ -47,9 +45,16 @@
     <section class="hero" id="top" aria-labelledby="hero-title">
       <div class="hero-stage">
         <div class="hero-ambient" aria-hidden="true"></div>
-        <div class="hero-artwork" data-parallax="hero" aria-hidden="true"><picture><source srcset="./assets/hero-mobile.webp" media="(max-width: 767px)"><img src="./assets/hero.webp" width="1548" height="1093" alt="" fetchpriority="high" decoding="async"></picture></div>
+        <div class="hero-artwork" data-parallax="hero" aria-hidden="true"><picture>
+          <source srcset="./assets/hero-art-320.webp" media="(max-width: 399px)">
+          <source srcset="./assets/hero-art-480.webp" media="(max-width: 579px)">
+          <source srcset="./assets/hero-art-640.webp" media="(max-width: 799px)">
+          <source srcset="./assets/hero-art-960.webp" media="(max-width: 1099px)">
+          <source srcset="./assets/hero-art-1200.webp" media="(max-width: 1359px)">
+          <img src="./assets/hero.webp" width="1026" height="820" alt="" fetchpriority="high" decoding="async">
+        </picture></div>
         <div class="hero-copy">
-          <h1 id="hero-title" data-hero-enter><span class="mint-gradient">Focus your cyber budget</span> on the four shifts that matter most</h1>
+          <h1 id="hero-title" data-hero-enter><span class="mint-gradient">Focus your cyber budget</span> on the <span class="hero-phrase">four shifts that</span> <span class="hero-phrase">matter most</span></h1>
           <p class="hero-description" data-hero-enter>As you plan next year’s budget, the challenge isn’t deciding whether to spend on cybersecurity, but where to spend.</p>
           <div class="hero-actions" data-hero-enter><a class="button button-primary" href="#reports" data-report="report"><span>Download The Guide</span><svg class="icon"><use href="#arrow-right"/></svg></a><a class="button button-secondary" href="#reports" data-report="preview"><span>Download preview</span><svg class="icon"><use href="#arrow-right"/></svg></a></div>
         </div>

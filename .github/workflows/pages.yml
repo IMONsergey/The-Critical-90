@@ -44,6 +44,8 @@ jobs:
       - name: Figma geometry and full-page reference captures
         if: always()
         run: python3 tests/visual_review.py
+      - name: Figma geometry and all control-width screenshots
+        run: python3 tests/visual_test.py
       - name: Browser screenshots and results
         if: always()
         uses: actions/upload-artifact@v4
