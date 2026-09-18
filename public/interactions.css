@@ -1,0 +1,54 @@
+/* Interaction surfaces never change the approved layout dimensions. */
+.button::after {display:none}
+.button>span,.button>.icon {translate:var(--magnet-x,0px) var(--magnet-y,0px);transition:translate .22s var(--ease-out),transform .25s var(--ease-out)}
+.button:active {transform:translateY(1px)}
+.section-ambient {transform:translate3d(var(--ambient-x,0px),var(--ambient-y,0px),0);transition:transform .8s var(--ease-out)}
+.closing-art {transform:translate3d(var(--ambient-x,0px),var(--ambient-y,0px),0);transition:transform .7s var(--ease-out)}
+.shift-card {background-image:radial-gradient(240px circle at var(--light-x,50%) var(--light-y,50%),rgb(105 255 224 / 4%),transparent 75%)}
+.feature-card:hover,.timeline-card:hover,.timeline-card:focus-visible,.impact-item:hover {transform:none}
+.impact-item:hover .impact-icon {transform:none}
+.feature-card:focus-within::before {opacity:1}
+.timeline-card:focus-visible,.timeline-card[aria-pressed=true] {border-color:#a3f8e8}
+.timeline-card:focus-visible .stage-indicator {opacity:1;box-shadow:0 0 12px var(--accent)}
+.timeline-halo {left:0;right:0;top:0;height:100%;filter:none;background:radial-gradient(ellipse at center,rgb(0 217 170 / 18%),transparent 65%);transform:translateX(calc((var(--halo-index,1) - 1) * 28%));transition:transform .65s var(--ease-out)}
+.scan-light {display:none}
+.shift-image {will-change:auto}
+.field input:not([type=checkbox]):focus,.field select:focus,.field textarea:focus {box-shadow:0 0 0 1px rgb(61 232 202 / 45%),0 0 18px rgb(61 232 202 / 6%);background:#293330}
+.download-action,.language-trigger {position:relative}
+.download-action::before,.language-trigger::before {content:'';position:absolute;inset:-6px 0}
+.menu-topbar .header-inner {width:100%;max-width:none;gap:24px}
+.menu-topbar .desktop-nav {display:none}
+.menu-topbar #menu-open {display:grid}
+.menu-toggle.is-open .menu-glyph i {position:absolute;width:15px;transition:transform .2s,opacity .15s}
+.menu-toggle.is-open .menu-glyph i:first-child {transform:rotate(45deg)}
+.menu-toggle.is-open .menu-glyph i:nth-child(2) {opacity:0}
+.menu-toggle.is-open .menu-glyph i:last-child {transform:rotate(-45deg)}
+.menu-panel {border-radius:20px;background:#08181c}
+.menu-panel nav a {letter-spacing:0}
+.menu-dialog[open] .menu-panel nav a {animation:menu-item-in .3s both var(--ease-out)}
+.menu-dialog[open] .menu-panel nav a:nth-child(2) {animation-delay:35ms}
+.menu-dialog[open] .menu-panel nav a:nth-child(3) {animation-delay:70ms}
+.menu-dialog[open] .menu-panel nav a:nth-child(4) {animation-delay:105ms}
+@keyframes menu-item-in {from {opacity:0;transform:translateY(6px)} to {opacity:1;transform:translateY(0)}}
+.motion-ready [data-reveal] {transition-duration:.5s,.6s}
+.motion-ready [data-reveal]:not(.is-revealed) {transform:translateY(14px)}
+.motion-ready [data-reveal-kind=visual]:not(.is-revealed) {transform:scale(.985)}
+.why-background {object-fit:fill}
+@media (min-width:1360px) {.framework-heading h2{max-width:634px}}
+@media (hover:hover) and (pointer:fine) {
+ .feature-card:hover {transform:translateY(-3px)}
+ .feature-card:hover .feature-icon,.feature-card:focus-within .feature-icon {transform:translateY(-2px)}
+ .impact-item:hover .impact-icon {transform:translateY(-2px)}
+ .shift-card:not(.is-selected):hover {border-color:rgb(104 230 204 / 55%);background-color:rgb(28 65 60 / 24%)}
+}
+@media (max-width:799px) {
+ .timeline-halo{transform:translateY(calc((var(--halo-index,1) - 1) * 28%))}
+ /* Extend only the background edge; the approved numeral crop stays unchanged. */
+ .hero-artwork::after{content:'';position:absolute;left:calc(100% - 1px);top:0;width:40%;height:100%;background:url('./assets/hero-edge.png') 0 0/100% 100% no-repeat;mask-image:linear-gradient(to bottom,transparent,#000 12%,#000 98%,transparent);pointer-events:none}
+}
+@media (max-width:399px) {.header-inner,.menu-topbar .header-inner{gap:18px}.menu-topbar .brand{width:160px}}
+@media (prefers-reduced-motion:reduce) {
+ .button>span,.button>.icon,.section-ambient,.closing-art,.timeline-halo {translate:none;transform:none!important;transition:none}
+ .menu-dialog[open] .menu-panel nav a {animation:none}
+ .motion-ready [data-reveal]:not(.is-revealed) {transform:none}
+}

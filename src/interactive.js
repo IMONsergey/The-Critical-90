@@ -81,7 +81,9 @@ export class ShiftSelector {
         this.tabs[target].focus({ preventScroll: true });
       });
     });
-    root.addEventListener('pointerenter', () => this.pause('hover'), { passive: true });
+    root.addEventListener('pointerenter', event => {
+      if (event.pointerType !== 'touch' && matchMedia('(hover: hover) and (pointer: fine)').matches) this.pause('hover');
+    }, { passive: true });
     root.addEventListener('pointerleave', () => this.resume('hover'), { passive: true });
     root.addEventListener('focusin', () => this.pause('focus'));
     root.addEventListener('focusout', event => { if (!root.contains(event.relatedTarget)) this.resume('focus'); });
@@ -91,12 +93,18 @@ export class ShiftSelector {
       for (const entry of entries) entry.isIntersecting ? this.resume('offscreen') : this.pause('offscreen');
     }, { threshold: .15 }).observe(this.visual);
     this.playButton.addEventListener('click', () => {
-      this.automatic = !this.automatic;
+      this.automatic = !reducedMotion.matches && !this.automatic;
       this.updatePlayControl();
       this.schedule();
     });
     reducedMotion.addEventListener('change', () => {
-      if (reducedMotion.matches) this.automatic = false;
+      if (reducedMotion.matches) {
+        this.automatic = false;
+        this.sequence++;
+        this.animations.forEach(animation => animation.cancel());
+        this.animations = [];
+        this.panels.forEach((panel, index) => { panel.hidden = index !== this.active; });
+      }
       this.updatePlayControl();
       this.schedule();
     });
@@ -117,7 +125,8 @@ export class ShiftSelector {
   pause(reason) { this.pauses.add(reason); this.schedule(); }
   resume(reason) { this.pauses.delete(reason); this.schedule(); }
   updatePlayControl() {
-    this.playButton.setAttribute('aria-label', this.automatic ? 'Pause automatic slide rotation' : 'Play automatic slide rotation');
+    this.playButton.disabled = reducedMotion.matches;
+    this.playButton.setAttribute('aria-label', reducedMotion.matches ? 'Automatic rotation disabled by reduced motion' : this.automatic ? 'Pause automatic slide rotation' : 'Play automatic slide rotation');
     this.playButton.setAttribute('aria-pressed', String(!this.automatic));
     this.playButton.querySelector('use').setAttribute('href', this.automatic ? '#pause' : '#play');
     if (!this.automatic) this.visual.style.setProperty('--slide-progress', '1');
@@ -143,6 +152,7 @@ export class ShiftSelector {
     if (index === this.active) return;
     this.animations.forEach(animation => animation.cancel());
     this.animations = [];
+    const direction = index > this.active ? 1 : -1;
     const old = this.panels[this.active];
     const next = this.panels[index];
     const token = ++this.sequence;
@@ -162,10 +172,15 @@ export class ShiftSelector {
     this.root.querySelector('.shift-category').textContent = shifts[index].category;
     if (userInitiated) this.root.querySelector('#shift-announcement').textContent = `${shifts[index].index} of 4. ${shifts[index].title}. ${shifts[index].category}.`;
     if (reducedMotion.matches) { old.hidden = true; return; }
-    const incoming = next.animate([{ opacity: 0, transform: 'scale(1.045)' }, { opacity: 1, transform: 'scale(1)' }], { duration: 750, easing: 'cubic-bezier(.16,1,.3,1)' });
-    const outgoing = old.animate([{ opacity: 1, transform: 'scale(1)' }, { opacity: 0, transform: 'scale(1.02)' }], { duration: 470, easing: 'ease-out' });
-    const scan = this.root.querySelector('.scan-light').animate([{ transform: 'translateY(-90%)', opacity: 0 }, { opacity: .75, offset: .25 }, { transform: 'translateY(90%)', opacity: 0 }], { duration: 900, easing: 'cubic-bezier(.25,.1,.25,1)' });
-    this.animations = [incoming, outgoing, scan];
+    const incoming = next.animate([
+      { opacity:0, transform:`translateX(${direction * 6}px) scale(1.016)` },
+      { opacity:1, transform:'translateX(0) scale(1)' },
+    ], { duration:460, easing:'cubic-bezier(.16,1,.3,1)' });
+    const outgoing = old.animate([
+      { opacity:1, transform:'translateX(0) scale(1)' },
+      { opacity:0, transform:`translateX(${-direction * 4}px) scale(1.006)` },
+    ], { duration:260, easing:'ease-out' });
+    this.animations = [incoming, outgoing];
     outgoing.finished.then(() => { if (token === this.sequence) old.hidden = true; }).catch(() => {});
   }
 }
@@ -176,11 +191,44 @@ export function initInteractive() {
   const stageDialog = new DialogController(document.getElementById('stage-dialog'));
   const selector = new ShiftSelector(document.getElementById('shifts'));
   const menuOpen = document.getElementById('menu-open');
+  // The menu uses the same header controls: no duplicate IDs or second language state.
+  const header = document.querySelector('.header-inner');
+  const headerHome = header.parentElement;
+  const menuHeader = menu.element.querySelector('.menu-topbar');
+  menuHeader.replaceChildren();
+  const closeMenu = menu.close.bind(menu);
+  let closingMenu = null;
+  menu.close = (options = {}) => {
+    if (closingMenu) return closingMenu;
+    if (!menu.element.open) return Promise.resolve();
+    closingMenu = (async () => {
+      await closeMenu({ ...options, restoreFocus:false });
+      headerHome.append(header);
+      menuOpen.setAttribute('aria-expanded','false');
+      menuOpen.setAttribute('aria-label','Open navigation');
+      menuOpen.classList.remove('is-open');
+      if (options.restoreFocus !== false) {
+        const target = menuOpen.getClientRects().length ? menuOpen : header.querySelector('.brand');
+        target.focus({ preventScroll:true });
+      }
+      closingMenu = null;
+    })();
+    return closingMenu;
+  };
   menuOpen.addEventListener('click', () => {
+    if (menu.element.open) { menu.close(); return; }
+    menuHeader.append(header);
+    menuOpen.setAttribute('aria-expanded','true');
+    menuOpen.setAttribute('aria-label','Close navigation');
+    menuOpen.classList.add('is-open');
     menu.open(menuOpen);
-    menuOpen.setAttribute('aria-expanded', 'true');
   });
-  menu.element.addEventListener('close', () => menuOpen.setAttribute('aria-expanded', 'false'));
+  header.querySelector('.brand').addEventListener('click', async event => {
+    if (!menu.element.open) return;
+    event.preventDefault();
+    await menu.close({ restoreFocus:false });
+    goTo('#top');
+  });
   document.querySelectorAll('[data-close-menu]').forEach(element => element.addEventListener('click', async event => {
     event.preventDefault();
     const hash = element.getAttribute('href');
@@ -195,7 +243,6 @@ export function initInteractive() {
     const target = document.getElementById(hash.slice(1));
     if (!target) return;
     target.scrollIntoView({ behavior: reducedMotion.matches ? 'instant' : 'smooth', block: 'start' });
-    // The target receives focus without inserting it into the normal tab order.
     target.setAttribute('tabindex', '-1');
     target.focus({ preventScroll: true });
     target.addEventListener('blur', () => target.removeAttribute('tabindex'), { once: true });
@@ -228,7 +275,8 @@ export function initInteractive() {
     const type = trigger.dataset.report;
     const url = type === 'preview' ? config.previewUrl : type === 'report' ? config.reportUrl : '';
     if (url) {
-      const parsed = new URL(url, location.href);
+      let parsed;
+      try { parsed = new URL(url, location.href); } catch { return; }
       if (parsed.protocol !== 'https:' && parsed.origin !== location.origin) return;
       window.open(parsed.href, '_blank', 'noopener,noreferrer');
       return;
@@ -248,9 +296,9 @@ export function initInteractive() {
   document.querySelectorAll('[data-day]').forEach(button => {
     const stage = stages.find(item => item.day === Number(button.dataset.day));
     if (!stage) return;
-    button.addEventListener('pointerenter', () => {
-      document.querySelector('.timeline-halo')?.style.setProperty('--halo-x', `${stages.indexOf(stage) * 40 + 10}%`);
-    }, { passive: true });
+    const emphasize = () => document.querySelector('.timeline-wrap')?.style.setProperty('--halo-index', stages.indexOf(stage));
+    button.addEventListener('pointerenter', event => { if (event.pointerType !== 'touch') emphasize(); }, { passive:true });
+    button.addEventListener('focus', emphasize);
     button.addEventListener('click', () => {
       document.querySelectorAll('[data-day]').forEach(item => item.setAttribute('aria-pressed', String(item === button)));
       stageDialog.element.querySelector('#stage-dialog-label').textContent = stage.label;
