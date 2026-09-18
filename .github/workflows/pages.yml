@@ -48,6 +48,8 @@ jobs:
           python -m playwright install --with-deps chromium
       - name: Responsive and interaction tests
         run: npm run test
+      - name: Figma geometry and all control-width screenshots
+        run: python3 tests/visual_test.py
       - name: Browser screenshots and results
         if: always()
         uses: actions/upload-artifact@v4
