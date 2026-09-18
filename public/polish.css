@@ -11,7 +11,7 @@
 .feature-card:focus-within::before {opacity:1}
 .timeline-card:focus-visible,.timeline-card[aria-pressed=true] {border-color:#a3f8e8}
 .timeline-card:focus-visible .stage-indicator {opacity:1;box-shadow:0 0 12px var(--accent)}
-.timeline-halo {left:0;right:0;top:0;height:100%;filter:none;background:radial-gradient(ellipse at center,rgb(0 217 170 / 18%),transparent 65%);transform:translateX(calc((var(--halo-index,1) - 1) * 28%));transition:transform .65s var(--ease-out)}
+.timeline-halo {transform:translateX(calc((var(--halo-index,1) - 1) * 28%));transition:transform .65s var(--ease-out)}
 .scan-light {display:none}
 .shift-image {will-change:auto}
 .field input:not([type=checkbox]):focus,.field select:focus,.field textarea:focus {box-shadow:0 0 0 1px rgb(61 232 202 / 45%),0 0 18px rgb(61 232 202 / 6%);background:#293330}
