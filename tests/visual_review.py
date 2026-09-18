@@ -23,7 +23,7 @@ TARGETS = {
 }
 SECTIONS = ['#priority','#shifts','.why-card','#guide','#framework','.closing-card','.consultation-form','.site-footer']
 CHILD_TARGETS = json.loads((ROOT/'tests/figma-child-targets.json').read_text())['targets']
-SELECTORS = SECTIONS + ['.hero-artwork','.hero-actions .button','.hero-actions .button>span','.hero-actions .button>.icon','.hero-stage','.hero-copy h1','.hero-description','.hero-actions','.brand','.header-inner','.language-trigger','.download-action','.menu-toggle','.priority h2','.priority-action','.priority-action p','.exposure-card','.impact-item','.shifts-intro','.shift-visual','.shift-tabs','.shift-card','.why-copy','.why-copy h2','.why-copy>p:not(.eyebrow)','.why-number','.section-heading','.feature-grid','.feature-card','.feature-outcome','.framework-heading','.timeline','.timeline-card','.timeline-number','.timeline-unit','.closing-copy','.closing-brand','.form-header','.form-header h2','.form-header p','.form-fields','.form-consents','.checkbox','.field input','.field textarea','.consultation-form>.button']
+SELECTORS = SECTIONS + ['.priority-art','.hero-artwork','.hero-actions .button','.hero-actions .button>span','.hero-actions .button>.icon','.hero-stage','.hero-copy h1','.hero-description','.hero-actions','.brand','.header-inner','.language-trigger','.download-action','.menu-toggle','.priority h2','.priority-action','.priority-action p','.exposure-card','.impact-item','.shifts-intro','.shift-visual','.shift-tabs','.shift-card','.why-copy','.why-copy h2','.why-copy>p:not(.eyebrow)','.why-number','.section-heading','.feature-grid','.feature-card','.feature-outcome','.framework-heading','.timeline','.timeline-card','.timeline-number','.timeline-unit','.closing-copy','.closing-brand','.form-header','.form-header h2','.form-header p','.form-fields','.form-consents','.checkbox','.field input','.field textarea','.consultation-form>.button']
 
 async def run():
     OUT.mkdir(exist_ok=True)
@@ -76,7 +76,8 @@ async def run():
                 for button,label,icon in zip(boxes['.hero-actions .button'],boxes['.hero-actions .button>span'],boxes['.hero-actions .button>.icon']):
                     assert label['x']>=button['x'] and label['x']+label['width']<=icon['x'], f'{width}: CTA label overlaps icon'
                     assert icon['x']+icon['width']<=button['x']+button['width']-8, f'{width}: clipped CTA arrow'
-                    assert icon['width']==24 and icon['height']==24, f'{width}: compressed CTA arrow' 
+                    assert icon['width']==24 and icon['height']==24, f'{width}: compressed CTA arrow'
+                    assert button['font']==('20px' if width>=1360 else '18px'), f'{width}: Hero CTA typography' 
                 layout['deltas'] = {s:{k:round(boxes[s][0][k]-target[j],2) for j,k in enumerate(['y','height'])} for s,target in zip(SECTIONS,TARGETS.get(width,[]))}
                 report['layouts'].append(layout)
                 assert layout['width']==width, f'Horizontal overflow at {width}'
