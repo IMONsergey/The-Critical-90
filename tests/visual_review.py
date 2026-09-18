@@ -85,6 +85,12 @@ async def run():
                 if width in TARGETS:
                     await page.screenshot(path=str(OUT/f'page-{width}.png'),full_page=True)
                     await page.locator('.hero-stage').screenshot(path=str(OUT/f'hero-{width}.png'))
+                if width in TARGETS or width==1920:
+                    if width==1920:
+                        await page.locator('.hero').screenshot(path=str(OUT/'hero-1920.png'))
+                    seam=boxes['.closing-card'][0]
+                    await page.evaluate('y=>scrollTo({top:y,behavior:"instant"})',seam['y']+seam['height']-140)
+                    await page.screenshot(path=str(OUT/f'closing-join-{width}.png'))
                 print(width,layout['height'],json.dumps(layout['deltas']),flush=True)
                 await context.close()
             await browser.close()

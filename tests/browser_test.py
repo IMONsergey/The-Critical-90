@@ -140,6 +140,18 @@ async def run():
             await page.wait_for_timeout(500)
             x=await page.locator('.hero-artwork').evaluate('e=>parseFloat(e.style.getPropertyValue("--hero-x"))||0')
             assert 0<abs(x)<8,x
+            # Pointer and scroll movement must never reveal an empty image edge.
+            for px,py,scroll in [(8,8,0),(1432,8,0),(1432,750,0),(8,400,240)]:
+                await page.evaluate('y=>scrollTo({top:y,behavior:"instant"})',scroll)
+                await page.mouse.move(px,py)
+                await page.wait_for_timeout(500)
+                bounds=await page.locator('.hero-artwork').evaluate('''e=>{
+                  const frame=e.getBoundingClientRect(),image=e.querySelector('img').getBoundingClientRect();
+                  return {left:frame.left-image.left,right:image.right-frame.right,top:frame.top-image.top,bottom:image.bottom-frame.bottom};
+                }''')
+                assert min(bounds.values())>=-.1, f'Uncovered Hero edge: {bounds}'
+            await page.screenshot(path=str(OUT/'hero-motion-1440.png'))
+            report['checks'].append('Hero image covers its fixed frame at pointer extremes and during scroll')
             await page.emulate_media(reduced_motion='reduce')
             await page.wait_for_timeout(100)
             assert await page.locator('.hero-artwork').evaluate('e=>!e.style.getPropertyValue("--hero-x")')

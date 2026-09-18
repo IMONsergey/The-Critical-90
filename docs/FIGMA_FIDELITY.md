@@ -10,6 +10,8 @@ Figma cap-height trimming is represented by CSS `text-box` on the priority headi
 
 Hero and Priority use art-directed WebP exports of the actual visible Figma artwork at all six composition widths. There is no repeated-edge continuation or second masking layer. The 960px CTA children intentionally span 492px within a 430px copy column.
 
+Hero motion operates inside a stationary, feathered viewport. Overscan follows the actual pointer/scroll displacement, returning to the source crop at rest. This prevents the opaque exported scene from exposing moving rectangular edges. The final CTA and consultation share the outer page-flow clip, allowing their native light and alpha-image fades to cross the section gap without a horizontal cut.
+
 Why backgrounds and numbers use native Figma renders at each approved width. The original SVG exports are retained as source references; browser rendering of their Figma glass/inner-shadow filters was visibly flat, so the displayed numbers use lossless WebP with alpha. Framework uses the source SVG grid, source gradient/inner-shadow values, backdrop blur and the measured stroked halo. Browser glass approximates Figma refraction; it is not a claim of pixel identity. CTA uses source crop positions and proportional scaling. Why masks and consultation backgrounds use isolated alpha exports (contentsOnly), so their edges preserve the native fade instead of embedding the page background into a rectangle.
 
 ## Interaction

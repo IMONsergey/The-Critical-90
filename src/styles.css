@@ -77,9 +77,9 @@ p { margin: 0; }
 #menu-open { display: none; }
 .hero { position: relative; overflow: clip; isolation: isolate; background: #0e161c; }
 .hero-stage { max-width: 1440px; margin: auto; position: relative; min-height: 820px; }
-.hero-artwork { position: absolute; z-index: 0; width: 1026px; height: 820px; left: 414px; top: 0; transform: translate3d(var(--hero-x,0px),calc(var(--hero-y,0px) + var(--scroll-depth,0px)),0); will-change: transform; pointer-events: none; }
+.hero-artwork { position: absolute; z-index: 0; width: 1026px; height: 820px; left: 414px; top: 0; overflow: hidden; mask-image: linear-gradient(to right,transparent,#000 64px); pointer-events: none; }
 /* These assets are Figma visible-layer exports: the source fill/crop is already baked in. */
-.hero-artwork picture { display: block; width: 100%; height: 100%; }
+.hero-artwork picture { display: block; width: 100%; height: 100%; transform: translate3d(var(--hero-x,0px),calc(var(--hero-y,0px) + var(--scroll-depth,0px)),0) scale(var(--hero-scale,1)); will-change: transform; }
 .hero-artwork img { width: 100%; max-width: none; height: 100%; object-fit: cover; object-position: center bottom; }
 .hero-ambient { position: absolute; inset: -20% -25% -10% 20%; z-index: -1; background: radial-gradient(ellipse at 72% 42%,rgb(0 172 151 / 15%),transparent 52%); opacity: .7; }
 .horizon { position: absolute; inset: auto 3% -22px; height: 34px; background: radial-gradient(ellipse at 50% 0,#61efd67d,transparent 70%); filter: blur(5px); }
@@ -273,7 +273,8 @@ h1 { margin: 0; font-weight: 500; font-size: 82px; letter-spacing: 0; line-heigh
 .closing-copy .eyebrow { line-height: 16px; }
 .closing-copy .button { margin-top: 48px; }
 .closing-brand { height: auto; width: 287px; margin-top: 48px; }
-.consultation { position: relative; isolation: isolate; overflow: clip; margin-top: var(--section-gap); padding-bottom: 66px; }
+/* Both final sections share page-flow's outer clip; their lights cross the gap. */
+.consultation { position: relative; isolation: isolate; padding-bottom: 66px; }
 .consultation-form { width: 560px; display: flex; flex-direction: column; backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px); padding: 28px 35px 37px; gap: 0; background: linear-gradient(145deg,rgb(32 39 38 / 97%),rgb(28 32 31 / 96%)); }
 .form-header h2 { height: 47.5px; font-size: 36px; line-height: 36.72px; letter-spacing: -1.44px; }
 .form-header p { color: #d3dedd; height: 47.5px; font-size: 16px; line-height: 19.2px; margin-top: 16px; }
@@ -323,6 +324,9 @@ h1 { margin: 0; font-weight: 500; font-size: 82px; letter-spacing: 0; line-heigh
 @keyframes scroll-cue { 0%,100% {transform:scaleY(.5);opacity:.4} 50% {transform:scaleY(1);opacity:1} }
 
 /* Wide desktop */
+@media (min-width:1441px) {
+  .hero-artwork { mask-image: linear-gradient(to right,transparent,#000 64px,#000 calc(100% - 96px),transparent),linear-gradient(to bottom,transparent,#000 48px,#000 calc(100% - 48px),transparent); mask-composite: intersect; }
+}
 @media (min-width:1600px) {
   .hero-stage { min-height: 880px; }
   .hero-copy { padding-top: 164px; }
@@ -506,7 +510,7 @@ h1 { margin: 0; font-weight: 500; font-size: 82px; letter-spacing: 0; line-heigh
   .hero-phrase { white-space: normal; }
   .hero-description { width: 100%; max-width: none; margin-top: 24px; }
   .hero-actions { gap: 12px; margin-top: 24px; }
-  .hero-artwork { width: 100%; height: 926px; left: 0; top: 0; }
+  .hero-artwork { width: 100%; height: 926px; left: 0; top: 0; mask-image: none; }
 
   .hero-ambient { inset: 180px -160px 0 -120px; background: radial-gradient(ellipse at 66% 48%,rgb(21 198 182 / 26%),transparent 68%); opacity: 1; }
   .priority-copy { gap: 28px; }
@@ -634,7 +638,7 @@ h1 { margin: 0; font-weight: 500; font-size: 82px; letter-spacing: 0; line-heigh
   .header-actions { gap: 2px; }
   .hero-copy h1 { font-size: 34px; line-height: 37px; }
   .hero-description { font-size: 14px; line-height: 20px; }
-  .hero-artwork { width: 100%; height: 483px; left: 0; top: 331px; }
+  .hero-artwork { width: 100%; height: 483px; left: 0; top: 331px; mask-image: linear-gradient(transparent,#000 32px); }
   .priority h2 { font-size: 24px; line-height: 29px; }
   .priority-action p { font-size: 16px; line-height: 22px; }
   .exposure-card { padding: 19px; }

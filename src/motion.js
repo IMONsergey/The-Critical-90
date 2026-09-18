@@ -41,6 +41,9 @@ export function initMotion() {
   let scrollDirty = true;
   let viewportHeight = innerHeight;
   let maxScroll = 1;
+  let heroWidth = 1;
+  let heroHeight = 1;
+  let scrollDepth = 0;
   const canMove = () => finePointer.matches && !reducedMotion.matches && !document.hidden;
   const schedule = () => { if (!frame && !document.hidden) frame = requestAnimationFrame(update); };
 
@@ -51,7 +54,18 @@ export function initMotion() {
   }
   function resetHero() {
     Object.assign(spring, { x:0,y:0,tx:0,ty:0,vx:0,vy:0,time:0 });
-    for (const property of ['--hero-x','--hero-y','--scroll-depth']) heroArtwork?.style.removeProperty(property);
+    scrollDepth = 0;
+    for (const property of ['--hero-x','--hero-y','--scroll-depth','--hero-scale']) heroArtwork?.style.removeProperty(property);
+  }
+
+  function paintHero() {
+    // Overscan only while moving: keep every edge covered inside the fixed mask.
+    // At rest scale is exactly 1, preserving the approved Figma crop.
+    const scale = 1 + Math.max(2 * Math.abs(spring.x) / heroWidth, 2 * Math.abs(spring.y + scrollDepth) / heroHeight);
+    heroArtwork?.style.setProperty('--hero-x', `${spring.x.toFixed(2)}px`);
+    heroArtwork?.style.setProperty('--hero-y', `${spring.y.toFixed(2)}px`);
+    heroArtwork?.style.setProperty('--scroll-depth', `${scrollDepth.toFixed(2)}px`);
+    heroArtwork?.style.setProperty('--hero-scale', scale.toFixed(6));
   }
 
   function update(now) {
@@ -61,13 +75,12 @@ export function initMotion() {
     // Complete all layout reads before assigning any styles.
     const samples = motion ? [...pending].filter(([element]) => visible.has(element)).map(([element, point]) => ({ element, point, rect:element.getBoundingClientRect() })) : [];
     const depths = motion && innerWidth > 799 && scrollDirty ? parallaxItems.filter(element => visible.has(element)).map(element => ({ element, rect:element.getBoundingClientRect() })) : [];
-    const heroHeight = scrollDirty ? hero?.offsetHeight ?? 0 : 0;
     pending.clear();
     if (scrollDirty) {
       header?.classList.toggle('is-scrolled', y > 32);
       backTop?.classList.toggle('is-visible', y > viewportHeight * 1.4);
       if (progress) progress.style.transform = `scaleX(${clamp(y / maxScroll, 0, 1)})`;
-      if (motion && innerWidth > 799 && visible.has(hero)) heroArtwork?.style.setProperty('--scroll-depth', `${Math.min(22, y * .035, heroHeight * .035)}px`);
+      if (motion && innerWidth > 799 && visible.has(hero)) scrollDepth = Math.min(22, y * .035, heroHeight * .035);
       for (const { element, rect } of depths) {
         const offset = clamp((viewportHeight / 2 - rect.top - rect.height / 2) * .025, -14, 14);
         element.style.setProperty('--parallax-y', `${offset.toFixed(2)}px`);
@@ -96,15 +109,18 @@ export function initMotion() {
     }
     if (!motion || innerWidth < 800 || !visible.has(hero)) { resetHero(); return; }
     const distance = Math.abs(spring.tx - spring.x) + Math.abs(spring.ty - spring.y) + Math.abs(spring.vx) + Math.abs(spring.vy);
-    if (distance < .025) { spring.time = 0; return; }
+    if (distance < .025) {
+      Object.assign(spring, { x:spring.tx,y:spring.ty,vx:0,vy:0,time:0 });
+      paintHero();
+      return;
+    }
     const dt = spring.time ? Math.min(2, (now - spring.time) / 16.667) : 1;
     spring.time = now;
     spring.vx = (spring.vx + (spring.tx - spring.x) * .065 * dt) * Math.pow(.75, dt);
     spring.vy = (spring.vy + (spring.ty - spring.y) * .065 * dt) * Math.pow(.75, dt);
     spring.x += spring.vx * dt;
     spring.y += spring.vy * dt;
-    heroArtwork?.style.setProperty('--hero-x', `${spring.x.toFixed(2)}px`);
-    heroArtwork?.style.setProperty('--hero-y', `${spring.y.toFixed(2)}px`);
+    paintHero();
     schedule();
   }
 
@@ -122,6 +138,8 @@ export function initMotion() {
   new Set([hero, ...parallaxItems, ...lightItems]).forEach(element => { if (element) visibility.observe(element); });
   const resize = () => {
     viewportHeight = innerHeight;
+    heroWidth = Math.max(1, heroArtwork?.offsetWidth || 1);
+    heroHeight = Math.max(1, heroArtwork?.offsetHeight || 1);
     maxScroll = Math.max(1, document.documentElement.scrollHeight - viewportHeight);
     scrollDirty = true;
     schedule();
