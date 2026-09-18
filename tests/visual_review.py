@@ -22,7 +22,8 @@ TARGETS = {
   320: [[878,833.23],[1767.23,1279.24],[3102.47,590.71],[3749.18,1530],[5335.18,1590],[6981.18,481],[7518.18,970],[8536.18,62.373]],
 }
 SECTIONS = ['#priority','#shifts','.why-card','#guide','#framework','.closing-card','.consultation-form','.site-footer']
-SELECTORS = SECTIONS + ['.hero-stage','.hero-copy h1','.hero-description','.hero-actions','.brand','.header-inner','.language-trigger','.download-action','.menu-toggle','.priority h2','.priority-action','.priority-action p','.exposure-card','.impact-item','.shifts-intro','.shift-visual','.shift-tabs','.shift-card','.why-copy','.why-copy h2','.why-copy>p:not(.eyebrow)','.why-number','.section-heading','.feature-grid','.feature-card','.feature-outcome','.framework-heading','.timeline','.timeline-card','.timeline-number','.timeline-unit','.closing-copy','.closing-brand','.form-header','.form-header h2','.form-header p','.form-fields','.form-consents','.checkbox','.field input','.field textarea','.consultation-form>.button']
+CHILD_TARGETS = json.loads((ROOT/'tests/figma-child-targets.json').read_text())['targets']
+SELECTORS = SECTIONS + ['.hero-artwork','.hero-actions .button','.hero-actions .button>span','.hero-actions .button>.icon','.hero-stage','.hero-copy h1','.hero-description','.hero-actions','.brand','.header-inner','.language-trigger','.download-action','.menu-toggle','.priority h2','.priority-action','.priority-action p','.exposure-card','.impact-item','.shifts-intro','.shift-visual','.shift-tabs','.shift-card','.why-copy','.why-copy h2','.why-copy>p:not(.eyebrow)','.why-number','.section-heading','.feature-grid','.feature-card','.feature-outcome','.framework-heading','.timeline','.timeline-card','.timeline-number','.timeline-unit','.closing-copy','.closing-brand','.form-header','.form-header h2','.form-header p','.form-fields','.form-consents','.checkbox','.field input','.field textarea','.consultation-form>.button']
 
 async def run():
     OUT.mkdir(exist_ok=True)
@@ -58,6 +59,24 @@ async def run():
                 })]))''', SELECTORS)
                 layout = await page.evaluate('''()=>({viewport:innerWidth,width:document.documentElement.scrollWidth,height:document.documentElement.scrollHeight,fonts:[...document.fonts].map(f=>({family:f.family,weight:f.weight,status:f.status})),broken:[...document.images].filter(i=>!i.naturalWidth).map(i=>i.src)})''')
                 layout['geometry'] = boxes
+                layout['hero_lines'] = await page.locator('.hero-copy h1').evaluate("""e=>{
+                  const walker=document.createTreeWalker(e,NodeFilter.SHOW_TEXT), lines=new Map();
+                  while(walker.nextNode()){const n=walker.currentNode;for(let i=0;i<n.length;i++){
+                    const r=document.createRange();r.setStart(n,i);r.setEnd(n,i+1);const b=r.getBoundingClientRect();
+                    const y=Math.round(b.y);lines.set(y,(lines.get(y)||'')+n.textContent[i]);
+                  }}return [...lines.values()].map(s=>s.trim()).filter(Boolean);
+                }""")
+                if str(width) in CHILD_TARGETS:
+                    expected=CHILD_TARGETS[str(width)]
+                    for selector, targets in [('.hero-copy h1',[expected['h1']]),('.hero-artwork',[expected['artwork']]),('.hero-actions .button',expected['buttons']),('.why-number',[expected['why_number']])]:
+                        for actual,target in zip(boxes[selector],targets):
+                            for i,dimension in enumerate(['x','y','width','height']):
+                                assert abs(actual[dimension]-target[i])<=2, f'{width}: {selector} {dimension} {actual[dimension]} != {target[i]}'
+                    assert layout['hero_lines']==expected['lines'], f'{width}: H1 lines {layout["hero_lines"]}'
+                for button,label,icon in zip(boxes['.hero-actions .button'],boxes['.hero-actions .button>span'],boxes['.hero-actions .button>.icon']):
+                    assert label['x']>=button['x'] and label['x']+label['width']<=icon['x'], f'{width}: CTA label overlaps icon'
+                    assert icon['x']+icon['width']<=button['x']+button['width']-8, f'{width}: clipped CTA arrow'
+                    assert icon['width']==24 and icon['height']==24, f'{width}: compressed CTA arrow' 
                 layout['deltas'] = {s:{k:round(boxes[s][0][k]-target[j],2) for j,k in enumerate(['y','height'])} for s,target in zip(SECTIONS,TARGETS.get(width,[]))}
                 report['layouts'].append(layout)
                 assert layout['width']==width, f'Horizontal overflow at {width}'

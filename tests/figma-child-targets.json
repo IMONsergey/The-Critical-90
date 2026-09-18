@@ -1,0 +1,244 @@
+{
+  "source": "KASPER WEB, verified against live frames on 2026-09-18; artwork uses visible exported bounds",
+  "targets": {
+    "1440": {
+      "h1": [
+        51,
+        148,
+        652,
+        333
+      ],
+      "buttons": [
+        [
+          56,
+          617,
+          287,
+          56
+        ],
+        [
+          355,
+          617,
+          267,
+          56
+        ]
+      ],
+      "artwork": [
+        414,
+        0,
+        1026,
+        820
+      ],
+      "lines": [
+        "Focus your cyber",
+        "budget on the",
+        "four shifts that",
+        "matter most"
+      ],
+      "why_number": [
+        885,
+        2683,
+        377,
+        359
+      ]
+    },
+    "1200": {
+      "h1": [
+        48,
+        136,
+        540,
+        276
+      ],
+      "buttons": [
+        [
+          48,
+          620,
+          240,
+          52
+        ],
+        [
+          300,
+          620,
+          240,
+          52
+        ]
+      ],
+      "artwork": [
+        329,
+        0,
+        871,
+        720
+      ],
+      "lines": [
+        "Focus your cyber",
+        "budget on the four",
+        "shifts that matter",
+        "most"
+      ],
+      "why_number": [
+        877.4404296875,
+        2388.84423828125,
+        226.55914306640625,
+        246.56585693359375
+      ]
+    },
+    "960": {
+      "h1": [
+        40,
+        136,
+        430,
+        224
+      ],
+      "buttons": [
+        [
+          40,
+          575,
+          240,
+          52
+        ],
+        [
+          292,
+          575,
+          240,
+          52
+        ]
+      ],
+      "artwork": [
+        193,
+        0,
+        767,
+        680
+      ],
+      "lines": [
+        "Focus your cyber",
+        "budget on the",
+        "four shifts that",
+        "matter most"
+      ],
+      "why_number": [
+        624,
+        2170.10888671875,
+        256,
+        278.6065673828125
+      ]
+    },
+    "640": {
+      "h1": [
+        28,
+        104,
+        584,
+        162
+      ],
+      "buttons": [
+        [
+          28,
+          360,
+          240,
+          52
+        ],
+        [
+          280,
+          360,
+          240,
+          52
+        ]
+      ],
+      "artwork": [
+        0,
+        0,
+        640,
+        926
+      ],
+      "lines": [
+        "Focus your cyber budget",
+        "on the four shifts that",
+        "matter most"
+      ],
+      "why_number": [
+        214,
+        3555.55078125,
+        212,
+        230.72105407714844
+      ]
+    },
+    "480": {
+      "h1": [
+        24,
+        104,
+        432,
+        192
+      ],
+      "buttons": [
+        [
+          24,
+          390,
+          432,
+          52
+        ],
+        [
+          24,
+          454,
+          432,
+          52
+        ]
+      ],
+      "artwork": [
+        0,
+        0,
+        480,
+        981
+      ],
+      "lines": [
+        "Focus your cyber",
+        "budget on the four",
+        "shifts that matter",
+        "most"
+      ],
+      "why_number": [
+        136.39453125,
+        3511.5087890625,
+        207.21144104003906,
+        225.5096435546875
+      ]
+    },
+    "320": {
+      "h1": [
+        20,
+        104,
+        280,
+        148
+      ],
+      "buttons": [
+        [
+          20,
+          360,
+          280,
+          52
+        ],
+        [
+          20,
+          424,
+          280,
+          52
+        ]
+      ],
+      "artwork": [
+        0,
+        331,
+        320,
+        483
+      ],
+      "lines": [
+        "Focus your cyber",
+        "budget on the",
+        "four shifts that",
+        "matter most"
+      ],
+      "why_number": [
+        80.650390625,
+        3500.466796875,
+        158.6995849609375,
+        172.71383666992188
+      ]
+    }
+  }
+}
